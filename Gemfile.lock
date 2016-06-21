@@ -5,6 +5,8 @@ GEM
       unf (>= 0.0.5, < 1.0.0)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
+    mail (2.6.4)
+      mime-types (>= 1.16, < 4)
     mime-types (2.99.2)
     netrc (0.11.0)
     rake (10.4.2)
@@ -20,6 +22,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  mail
   rake
   rest-client
 
