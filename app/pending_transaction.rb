@@ -1,3 +1,5 @@
-class PendingTransaction < Struct.new(transaction_id, amount, date, comment, account_id, type_id, bank_name, bank_bic_code) do
-
+class PendingTransaction < Struct.new(transaction_id, amount, date, comment, account_id, type_id) do
+    def self.build accounts_mapping_cfg, raw_transaction
+        # map
+    end
 end
