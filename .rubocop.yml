@@ -5,3 +5,7 @@ Style/Documentation:
   Exclude:
     - 'spec/**/*'
     - 'app/**/*'
+
+Style/FileName:
+  Exclude:
+    - 'app/email-parser/AGRIUAUK.rb'
