@@ -1,0 +1,7 @@
+Metrics/LineLength:
+  Max: 150
+
+Style/Documentation:
+  Exclude:
+    - 'spec/**/*'
+    - 'app/**/*'
