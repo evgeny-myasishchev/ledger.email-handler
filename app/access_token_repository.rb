@@ -1,13 +1,11 @@
 class AccessTokenRepository
-    def initialize(data_dir)
-        # test
-    end
+  def initialize(data_dir)
+    # test
+  end
 
-    def save email, access_token
+  def save(email, access_token)
+  end
 
-    end
-
-    def load email
-
-    end
+  def load(email)
+  end
 end
