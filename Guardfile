@@ -39,3 +39,8 @@ guard :rspec, cmd: 'bundle exec rspec' do
   # Ruby files
   watch(%r{^(fapp/.+)\.rb$})
 end
+
+guard :rubocop do
+  watch(/.+\.rb$/)
+  watch(%r{(?:.+/)?\.rubocop\.yml$}) { |m| File.dirname(m[0]) }
+end

@@ -22,6 +22,9 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
+    guard-rubocop (1.2.0)
+      guard (~> 2.0)
+      rubocop (~> 0.20)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
     listen (3.1.5)
@@ -88,6 +91,7 @@ PLATFORMS
 
 DEPENDENCIES
   guard-rspec
+  guard-rubocop
   mail
   rake
   rest-client
