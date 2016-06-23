@@ -37,7 +37,7 @@ guard :rspec, cmd: 'bundle exec rspec' do
   watch(rspec.spec_files)
 
   # Ruby files
-  watch(%r{^(fapp/.+)\.rb$})
+  watch(%r{^app/(.+)\.rb$}) { |m| "spec/#{m[1]}_spec.rb" }
 end
 
 guard :rubocop do
