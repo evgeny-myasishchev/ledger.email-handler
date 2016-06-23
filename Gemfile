@@ -11,4 +11,5 @@ group :development, :test do
   gem 'guard-rubocop'
   gem 'rspec'
   gem 'guard-rspec', require: false
+  gem 'ffaker'
 end
