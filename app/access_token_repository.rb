@@ -6,10 +6,15 @@ class AccessTokenRepository
   end
 
   def save(email, access_token)
-    @access_tokens_dir.join(email).write(JSON.pretty_generate(access_token))
+    FileUtils.mkdir_p @access_tokens_dir unless @access_tokens_dir.exist?
+    target_file(email).write(JSON.pretty_generate(access_token))
   end
 
   def load(email)
-    JSON.parse @access_tokens_dir.join(email).read
+    JSON.parse target_file(email).read
+  end
+
+  private def target_file(email)
+    @access_tokens_dir.join(email + '.json')
   end
 end

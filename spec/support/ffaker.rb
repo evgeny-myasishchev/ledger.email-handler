@@ -3,11 +3,11 @@ require 'ffaker'
 module FakeFactory
   def fake_access_token
     {
-      'access_token' => "access-token-#{FFaker::Lorem.characters[0..10]}",
+      'access_token' => fake_string('access-token'),
       'token_type' => 'Bearer',
       'expires_in' => 3600,
-      'refresh_token' => "refresh-token-#{FFaker::Lorem.characters[0..10]}",
-      'id_token' => "id-token-#{FFaker::Lorem.characters[0..30]}"
+      'refresh_token' => fake_string('refresh-token'),
+      'id_token' => fake_string('id-token', length: 30)
     }
   end
 

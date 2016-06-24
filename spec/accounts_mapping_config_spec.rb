@@ -8,8 +8,8 @@ describe AccountsMappingConfig do
   subject { described_class.new(data_dir) }
 
   before(:each) do
-    FileUtils.rm_rf accounts_mapping_dir if accounts_mapping_dir.exist?
-    FileUtils.mkdir_p accounts_mapping_dir
+    FileUtils.rm_rf data_dir if data_dir.exist?
+    FileUtils.mkdir_p data_dir
   end
 
   describe 'add_mapping' do
@@ -36,6 +36,7 @@ describe AccountsMappingConfig do
         bank_account_1 => ledger_account_1,
         bank_account_2 => ledger_account_2
       }
+      FileUtils.mkdir_p accounts_mapping_dir
       accounts_mapping_dir.join(email + '.json').write JSON.generate(mapping)
       expect(subject.get_mappings(email)).to eql(mapping)
     end
