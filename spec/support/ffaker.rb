@@ -10,6 +10,14 @@ module FakeFactory
       'id_token' => "id-token-#{FFaker::Lorem.characters[0..30]}"
     }
   end
+
+  def fake_email
+    FFaker::Internet.email
+  end
+
+  def fake_string(prefix, length: 10)
+    prefix + '-' + FFaker::Lorem.characters[0..length]
+  end
 end
 
 RSpec.configure do |config|
