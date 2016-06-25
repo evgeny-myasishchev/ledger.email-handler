@@ -28,6 +28,14 @@ WebMock.disable_net_connect!(allow_localhost: true)
 Dir[File.expand_path('./support/**/*.rb', __dir__)].each { |f| require f }
 
 RSpec.configure do |config|
+  Log = Logger.get(RSpec)
+  config.before do |spec|
+    Log.info "Running spec '#{spec.full_description}' (#{spec.location})"
+  end
+  config.after do |spec|
+    Log.info "Spec '#{spec.full_description}' completed"
+  end
+
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.

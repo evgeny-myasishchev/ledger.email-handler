@@ -1,8 +1,10 @@
 require 'rest-client'
 
 class GoogleAuthApi
+  Log = Logger.get(self)
   class << self
       def get_token(auth_code)
+        Log.debug "Getting token for auth_code: #{auth_code}"
         params = {
           code: auth_code,
           client_id: Settings.google.client_id,
@@ -12,10 +14,17 @@ class GoogleAuthApi
         }
 
         response = RestClient.post("#{Settings.google.googleapis_host}/oauth2/v4/token", params, &method(:handle_request))
-        JSON.parse response.body
+        token = JSON.parse response.body
+        Log.debug "Token retrieved for auth_code: #{auth_code}"
+        token
       end
 
       private def handle_request(resp, req, result, &block)
+        unless result.code == '200'
+          Log.error "Request failed with status code: #{result.code}"
+          Log.error resp
+        end
+
         # TODO: Log response
         resp.return! req, result, &block
       end
