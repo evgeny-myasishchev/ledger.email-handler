@@ -11,17 +11,12 @@ class GoogleAuthApi
           redirect_uri: 'urn:ietf:wg:oauth:2.0:oob'
         }
 
-        response = RestClient.post("#{Settings.google.googleapis_host}/oauth2/v4/token", params) do |resp, req, result, &block|
-          handle_request resp, req, result, &block
-        end
+        response = RestClient.post("#{Settings.google.googleapis_host}/oauth2/v4/token", params, &method(:handle_request))
         JSON.parse response.body
       end
 
       private def handle_request(resp, req, result, &block)
-        unless result.code == '200'
-          puts 'Request failed. Response:'
-          puts resp
-        end
+        # TODO: Log response
         resp.return! req, result, &block
       end
   end
