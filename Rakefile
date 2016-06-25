@@ -1,5 +1,4 @@
-$LOAD_PATH.unshift __dir__
-
+require File.expand_path 'boot', __dir__
 require 'uri'
 require 'app/bootstrap'
 require 'jwt'
