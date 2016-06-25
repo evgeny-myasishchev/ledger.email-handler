@@ -1,0 +1,4 @@
+google:
+    googleapis_host: http://localhost:43221
+    client_id: fake-client-id-23312123.apps.googleusercontent.com
+    client_secret: fake-secret-23312123
