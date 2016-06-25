@@ -2,3 +2,7 @@ google:
     googleapis_host: https://www.googleapis.com
     client_id: 127152602937-gpr5s8uce59ldqcqmivaf6ok0ksiovs5.apps.googleusercontent.com
     client_secret: <%= ENV['GOOGLE_CLIENT_SECRET'] %>
+log:
+    stdout:
+        enabled: true
+        level: :debug

@@ -7,6 +7,7 @@ gem 'rest-client'
 gem 'mail'
 gem 'jwt'
 gem 'config'
+gem 'logging'
 
 group :development, :test do
   gem 'rubocop', require: false
