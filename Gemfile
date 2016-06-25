@@ -5,6 +5,7 @@ source 'https://rubygems.org'
 gem 'rake'
 gem 'rest-client'
 gem 'mail'
+gem 'jwt'
 
 group :development, :test do
   gem 'rubocop', require: false

@@ -1,4 +1,8 @@
+$LOAD_PATH.unshift __dir__
+
 require 'uri'
+require 'app/bootstrap'
+require 'jwt'
 
 desc 'Show code prompt'
 task :'get-auth-code-url' do
@@ -18,7 +22,7 @@ task :'get-auth-code-url' do
 end
 
 desc 'Get access token'
-task :'get-access-token', [:auth_code] do |_t, a|
+task :'add-access-token', [:auth_code] do |_t, a|
   unless a.auth_code
     puts 'auth_code has not been provided. Please use rake get-auth-code-url to get auth code'
     exit 1
@@ -40,6 +44,10 @@ task :'get-access-token', [:auth_code] do |_t, a|
     end
     resp.return! req, result, &block
   end
-  puts response.body
-  puts response.body.class
+
+  access_token = JSON.parse response.body
+  id_token = JWT.decode(access_token['id_token'], nil, false)[0]
+
+  services = Bootstrap.new.create_services
+  services.access_token_repo.save(id_token['email'], access_token)
 end

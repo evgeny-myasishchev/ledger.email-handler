@@ -1,3 +1,4 @@
+require 'pathname'
 require 'app/lib/services'
 
 class Bootstrap
