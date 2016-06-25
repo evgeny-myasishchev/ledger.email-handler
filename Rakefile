@@ -7,7 +7,7 @@ desc 'Show code prompt'
 task :'get-auth-code-url' do
   params = {
     response_type: 'code',
-    client_id: '127152602937-gpr5s8uce59ldqcqmivaf6ok0ksiovs5.apps.googleusercontent.com',
+    client_id: Settings.google.client_id,
     redirect_uri: 'urn:ietf:wg:oauth:2.0:oob',
     scope: 'email',
     access_type: 'offline'
@@ -31,8 +31,8 @@ task :'add-access-token', [:auth_code] do |_t, a|
 
   params = {
     code: a.auth_code,
-    client_id: '127152602937-gpr5s8uce59ldqcqmivaf6ok0ksiovs5.apps.googleusercontent.com',
-    client_secret: '7ePL_3SJUcQ15nnUj3h8yK56',
+    client_id: Settings.google.client_id,
+    client_secret: Settings.google.client_secret,
     grant_type: 'authorization_code',
     redirect_uri: 'urn:ietf:wg:oauth:2.0:oob'
   }

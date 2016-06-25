@@ -4,3 +4,6 @@
 # Dev related stuff
 .rubocop_todo.yml
 tmp
+
+# Local configs
+config/*.local.yml

@@ -6,6 +6,7 @@ gem 'rake'
 gem 'rest-client'
 gem 'mail'
 gem 'jwt'
+gem 'config'
 
 group :development, :test do
   gem 'rubocop', require: false
