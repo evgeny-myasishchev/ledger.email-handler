@@ -1,6 +1,7 @@
 require File.expand_path 'boot', __dir__
 require 'uri'
 require 'app/bootstrap'
+require 'app/google_auth_api'
 require 'jwt'
 
 desc 'Show code prompt'
@@ -20,33 +21,18 @@ task :'get-auth-code-url' do
   puts auth_uri
 end
 
-desc 'Get access token'
-task :'add-access-token', [:auth_code] do |_t, a|
+desc 'Add access/id token for given auth code'
+task :'add-token', [:auth_code] do |_t, a|
   unless a.auth_code
     puts 'auth_code has not been provided. Please use rake get-auth-code-url to get auth code'
     exit 1
   end
 
-  require 'rest-client'
+  token_json = GoogleAuthApi.get_token a.auth_code
 
-  params = {
-    code: a.auth_code,
-    client_id: Settings.google.client_id,
-    client_secret: Settings.google.client_secret,
-    grant_type: 'authorization_code',
-    redirect_uri: 'urn:ietf:wg:oauth:2.0:oob'
-  }
-  response = RestClient.post('https://www.googleapis.com/oauth2/v4/token', params) do |resp, req, result, &block|
-    unless result.code == '200'
-      puts 'Request failed. Response:'
-      puts resp
-    end
-    resp.return! req, result, &block
-  end
-
-  access_token = JSON.parse response.body
-  id_token = JWT.decode(access_token['id_token'], nil, false)[0]
+  token = JSON.parse token_json
+  id_token = JWT.decode(token['id_token'], nil, false)[0]
 
   services = Bootstrap.new.create_services
-  services.access_token_repo.save(id_token['email'], access_token)
+  services.access_token_repo.save(id_token['email'], token)
 end
