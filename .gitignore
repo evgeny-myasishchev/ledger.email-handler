@@ -7,3 +7,6 @@ tmp
 
 # Local configs
 config/*.local.yml
+
+# Misc OS related stuff
+.DS_Store
