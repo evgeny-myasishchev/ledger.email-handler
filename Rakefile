@@ -2,6 +2,7 @@ require File.expand_path 'boot', __dir__
 require 'uri'
 require 'app/bootstrap'
 require 'app/google_auth_api'
+require 'app/token'
 require 'jwt'
 
 desc 'Show code prompt'
@@ -31,8 +32,20 @@ task :'add-token', [:auth_code] do |_t, a|
   token_json = GoogleAuthApi.get_token a.auth_code
 
   token = JSON.parse token_json
-  id_token = JWT.decode(token['id_token'], nil, false)[0]
+  id_token_payload = JWT.decode(token['id_token'], nil, false)[0]
 
   services = Bootstrap.new.create_services
-  services.access_token_repo.save(id_token['email'], token)
+  services.access_token_repo.save(id_token_payload['email'], token)
+end
+
+desc 'Refresh token'
+task :'refresh-token', [:email] do |_t, a|
+  unless a.email
+    puts 'email has not been provided. Please use rake get-auth-code-url to get auth code'
+    exit 1
+  end
+
+  services = Bootstrap.new.create_services
+  token = services.access_token_repo.load(a.email)
+  Token.refresh_if_needed token, services
 end
