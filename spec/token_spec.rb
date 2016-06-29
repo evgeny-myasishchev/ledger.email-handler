@@ -9,6 +9,24 @@ describe Token do
     instance_double(Services, access_token_repo: instance_double(AccessTokenRepository))
   end
 
+  describe 'get_id_token' do
+    let(:email) { fake_email }
+    let(:token) { fake_access_token id_token_email: email }
+    before(:each) do
+      expect(services.access_token_repo).to receive(:load).with(email) { token }
+    end
+
+    it 'should get corresponding id_token' do
+      expect(Token.get_id_token(email, services)).to eql(token['id_token'])
+    end
+
+    it 'should refresh_if_needed' do
+      refreshed = fake_access_token id_token_email: email
+      allow(Token).to receive(:refresh_if_needed).with(token, services) { refreshed }
+      expect(Token.get_id_token(email, services)).to eql(refreshed['id_token'])
+    end
+  end
+
   describe 'refresh_if_needed' do
     it 'should return token if it has not expired' do
       token = fake_access_token

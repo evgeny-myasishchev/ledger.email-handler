@@ -2,6 +2,12 @@ class Token
   Log = Logger.get(self)
 
   class << self
+    def get_id_token(email, services)
+      Log.debug "Retrieving id_token by email: #{email}"
+      token = refresh_if_needed(services.access_token_repo.load(email), services)
+      token['id_token']
+    end
+
     def refresh_if_needed(token, services)
       id_token = JWT.decode(token['id_token'], nil, false)
       Log.debug('The id_token of user ' + id_token[0]['email'] + ' has not expired yet (leeway is 30 seconds)')
