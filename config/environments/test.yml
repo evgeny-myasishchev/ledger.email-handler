@@ -5,3 +5,5 @@ google:
 log:
     stdout:
         enabled: false
+    file:
+        path: log/test.log

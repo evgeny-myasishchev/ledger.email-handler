@@ -8,5 +8,8 @@ tmp
 # Local configs
 config/*.local.yml
 
+# Logging
+log
+
 # Misc OS related stuff
 .DS_Store

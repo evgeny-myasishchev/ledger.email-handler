@@ -8,6 +8,14 @@ class Logger
     end
 
     def init
+      appenders = []
+      append_stdout_appender appenders
+      append_file_appender appenders
+      Logging.logger.root.appenders = appenders
+      Logging.logger.root.level = :debug
+    end
+
+    private def append_stdout_appender(appenders)
       settings = Settings.log
       appenders = []
       if settings.stdout.enabled
@@ -17,8 +25,16 @@ class Logger
         )
         appenders << stdout
       end
-      Logging.logger.root.appenders = appenders
-      Logging.logger.root.level = :debug
+    end
+
+    private def append_file_appender(appenders)
+      settings = Settings.log
+      if settings.file.enabled
+        stdout = Logging.appenders.file(settings.file.path,
+                                        layout: Logging::Layouts::Pattern.new,
+                                        level: settings.file.level)
+        appenders << stdout
+      end
     end
   end
 end
