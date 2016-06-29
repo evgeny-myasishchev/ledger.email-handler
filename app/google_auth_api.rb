@@ -19,6 +19,21 @@ class GoogleAuthApi
         token
       end
 
+      def refresh_token(refresh_token)
+        Log.debug 'Refreshing token with a refresh_token...'
+        params = {
+          refresh_token: refresh_token,
+          client_id: Settings.google.client_id,
+          client_secret: Settings.google.client_secret,
+          grant_type: 'refresh_token'
+        }
+
+        response = RestClient.post("#{Settings.google.googleapis_host}/oauth2/v4/token", params, &method(:handle_request))
+        token = JSON.parse response.body
+        Log.debug 'Token refreshed'
+        token
+      end
+
       private def handle_request(resp, req, result, &block)
         unless result.code == '200'
           Log.error "Request failed with status code: #{result.code}"
