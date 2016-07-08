@@ -3,6 +3,7 @@ require 'uri'
 require 'app/bootstrap'
 require 'app/google_auth_api'
 require 'app/token'
+wrequire 'app/ledger_api'
 require 'jwt'
 
 desc 'Show code prompt'
@@ -48,4 +49,16 @@ task :'refresh-token', [:email] do |_t, a|
   services = Bootstrap.new.create_services
   token = services.access_token_repo.load(a.email)
   Token.refresh_if_needed token, services
+end
+
+desc 'Show ledger accounts'
+task :'show-ledger-accounts', [:email] do |_t, a|
+  unless a.email
+    puts 'email has not been provided.'
+    exit 1
+  end
+  services = Bootstrap.new.create_services
+  id_token = Token.get_id_token a.email, services
+  ledger_api = LedgerApi.create id_token
+  puts ledger_api.accounts
 end
