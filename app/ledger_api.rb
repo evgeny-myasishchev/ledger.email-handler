@@ -16,8 +16,8 @@ class LedgerApi
     params = {
       google_id_token: id_token
     }
+    # TODO: Handle session cookie
     session_data = Request.post "#{Settings.ledger.api_host}/api/sessions", params
-    puts session_data
-    new LedgerApi(session_data)
+    new(session_data)
   end
 end

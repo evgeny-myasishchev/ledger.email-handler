@@ -3,7 +3,7 @@ require 'uri'
 require 'app/bootstrap'
 require 'app/google_auth_api'
 require 'app/token'
-wrequire 'app/ledger_api'
+require 'app/ledger_api'
 require 'jwt'
 
 desc 'Show code prompt'
@@ -30,9 +30,7 @@ task :'add-token', [:auth_code] do |_t, a|
     exit 1
   end
 
-  token_json = GoogleAuthApi.get_token a.auth_code
-
-  token = JSON.parse token_json
+  token = GoogleAuthApi.get_token a.auth_code
   id_token_payload = JWT.decode(token['id_token'], nil, false)[0]
 
   services = Bootstrap.new.create_services
