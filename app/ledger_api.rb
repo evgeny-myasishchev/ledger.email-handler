@@ -1,7 +1,9 @@
 require 'app/lib/request'
 
 class LedgerApi
-  def initialize(session)
+  Log = Logger.get(self)
+
+  def initialize(session, _csrf_token)
     @session = session
   end
 
@@ -17,7 +19,10 @@ class LedgerApi
       google_id_token: id_token
     }
     # TODO: Handle session cookie
-    session_data = Request.post "#{Settings.ledger.api_host}/api/sessions", params
-    new(session_data)
+    sessions_url = "#{Settings.ledger.api_host}/api/sessions"
+    puts "sessions_url: #{sessions_url}"
+    Log.debug "Posting google_id_token onto #{sessions_url}"
+    session_data = Request.post sessions_url, params
+    new(nil, session_data['form_authenticity_token'])
   end
 end
