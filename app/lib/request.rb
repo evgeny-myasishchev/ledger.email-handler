@@ -3,7 +3,13 @@ require 'rest-client'
 class Request
   Log = Logger.get(self)
   class << self
+    def get(url, params)
+      Log.debug "Processing GET #{url}"
+      RestClient.get(url, params, &method(:handle_request))
+    end
+
     def post(url, params)
+      Log.debug "Processing POST #{url}"
       RestClient.post(url, params, &method(:handle_request))
     end
 

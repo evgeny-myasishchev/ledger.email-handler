@@ -16,16 +16,16 @@ class LedgerApi
   end
 
   def accounts
-    @session
+    accounts_url = "#{Settings.ledger.api_host}/accounts"
+    response = Request.get accounts_url, 'Cookie' => "#{SESSION_COOKIE_NAME}=#{@session}", accept: :json
+    JSON.parse response
   end
 
   def self.create(id_token)
     params = {
       google_id_token: id_token
     }
-    # TODO: Handle session cookie
     sessions_url = "#{Settings.ledger.api_host}/api/sessions"
-    puts "sessions_url: #{sessions_url}"
     Log.debug "Posting google_id_token onto #{sessions_url}"
     response = Request.post sessions_url, params
     response_data = JSON.parse response.body

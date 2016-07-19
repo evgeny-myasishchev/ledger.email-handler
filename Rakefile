@@ -58,5 +58,6 @@ task :'show-ledger-accounts', [:email] do |_t, a|
   services = Bootstrap.new.create_services
   id_token = Token.get_id_token a.email, services
   ledger_api = LedgerApi.create id_token
-  puts ledger_api.accounts
+  accounts = ledger_api.accounts
+  puts JSON.pretty_generate(accounts)
 end
