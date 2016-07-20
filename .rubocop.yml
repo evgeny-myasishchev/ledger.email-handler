@@ -1,3 +1,9 @@
+AllCops:
+  TargetRubyVersion: 2.2
+  
+Metrics/ParameterLists:
+  CountKeywordArgs: false
+
 Metrics/LineLength:
   Max: 150
 
