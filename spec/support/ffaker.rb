@@ -1,7 +1,21 @@
 require 'ffaker'
 require 'jwt'
+require 'app/pending_transaction'
 
 module FakeFactory
+  def build_pending_transaction
+    types = [PendingTransaction::INCOME_TYPE_ID, PendingTransaction::EXPENSE_TYPE_ID]
+
+    PendingTransaction.new(
+      id: fake_string('tid'),
+      amount: SecureRandom.random_number,
+      date: FFaker::Time.date,
+      comment: FFaker::Lorem.phrase,
+      account_id: fake_string('aid'),
+      type_id: types[SecureRandom.random_number(types.length)]
+    )
+  end
+
   def fake_access_token(id_token_email: fake_email, id_token_exp: Time.now.to_i + 30)
     id_token_payload = {
       'email' => id_token_email,
