@@ -13,7 +13,7 @@ class GoogleAuthApi
           redirect_uri: 'urn:ietf:wg:oauth:2.0:oob'
         }
 
-        response = Request.post("#{Settings.google.googleapis_host}/oauth2/v4/token", params)
+        response = Request.post("#{Settings.google.googleapis_host}/oauth2/v4/token", data: params)
         token = JSON.parse response.body
         Log.debug "Token retrieved for auth_code: #{auth_code}"
         token
@@ -28,7 +28,7 @@ class GoogleAuthApi
           grant_type: 'refresh_token'
         }
 
-        response = Request.post("#{Settings.google.googleapis_host}/oauth2/v4/token", params)
+        response = Request.post("#{Settings.google.googleapis_host}/oauth2/v4/token", data: params)
         token = JSON.parse response.body
         Log.debug 'Token refreshed'
         token

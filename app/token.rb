@@ -10,7 +10,8 @@ class Token
 
     def refresh_if_needed(token, services)
       id_token = JWT.decode(token['id_token'], nil, false)
-      Log.debug('The id_token of user ' + id_token[0]['email'] + ' has not expired yet (leeway is 30 seconds)')
+      exp = Time.at(id_token[0]['exp']).to_datetime
+      Log.debug('The id_token of user ' + id_token[0]['email'] + " has not expired yet (leeway is 30 seconds). It has exp: #{exp}")
       return token
     rescue JWT::ExpiredSignature
       refresh_token token, services

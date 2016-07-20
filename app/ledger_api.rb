@@ -2,6 +2,7 @@ require 'app/lib/request'
 
 class LedgerApi
   CSRF_TOKEN_NAME = 'form_authenticity_token'.freeze
+  CSRF_HEADER_NAME = 'X-CSRF-Token'.freeze
   SESSION_COOKIE_NAME = '_ledger_session_v1'.freeze
   Log = Logger.get(self)
 
@@ -13,6 +14,13 @@ class LedgerApi
   end
 
   def report_pending_transaction(pending_transaction)
+    transactions_url = "#{Settings.ledger.api_host}/pending-transactions"
+    params = {
+      'Cookie' => "#{SESSION_COOKIE_NAME}=#{@session}",
+      'Content-Type' => 'application/json',
+      CSRF_HEADER_NAME => @csrf_token
+    }
+    Request.post transactions_url, data: pending_transaction.data.to_json, params: params
   end
 
   def accounts
@@ -27,7 +35,7 @@ class LedgerApi
     }
     sessions_url = "#{Settings.ledger.api_host}/api/sessions"
     Log.debug "Posting google_id_token onto #{sessions_url}"
-    response = Request.post sessions_url, params
+    response = Request.post sessions_url, data: params
     response_data = JSON.parse response.body
     new(response.cookies[SESSION_COOKIE_NAME], response_data[CSRF_TOKEN_NAME])
   end

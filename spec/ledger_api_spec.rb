@@ -35,7 +35,7 @@ describe LedgerApi do
     end
   end
 
-  describe 'accounts', focus: true do
+  describe 'accounts' do
     it 'should GET /accounts' do
       accounts = [
         { 'fake1' => 'fake-account-1' },
@@ -47,6 +47,21 @@ describe LedgerApi do
         .to_return(body: accounts.to_json, headers: { 'Content-Type' => 'application/json' })
 
       expect(subject.accounts).to eql accounts
+    end
+  end
+
+  describe 'report_pending_transaction' do
+    it 'should POST transaction data onto /pending-transactions' do
+      transaction = build_pending_transaction
+      stub = stub_request(:post, 'https://test.my-ledger.com/pending-transactions')
+             .with(body: transaction.data, headers: {
+                     'Content-Type' => 'application/json',
+                     'Cookie' => "#{LedgerApi::SESSION_COOKIE_NAME}=#{ledger_session_cookie}",
+                     LedgerApi::CSRF_HEADER_NAME => form_authenticity_token
+                   })
+             .to_return(status: 200)
+      subject.report_pending_transaction(transaction)
+      expect(stub).to have_been_requested
     end
   end
 end

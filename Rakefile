@@ -4,6 +4,7 @@ require 'app/bootstrap'
 require 'app/google_auth_api'
 require 'app/token'
 require 'app/ledger_api'
+require 'app/pending_transaction'
 require 'jwt'
 
 desc 'Show code prompt'
@@ -60,4 +61,21 @@ task :'show-ledger-accounts', [:email] do |_t, a|
   ledger_api = LedgerApi.create id_token
   accounts = ledger_api.accounts
   puts JSON.pretty_generate(accounts)
+end
+
+desc 'Report pending transaction'
+task :'report-pending-transaction', [:email, :id, :amount, :comment, :account_id] do |_t, a|
+  unless a.email
+    puts 'email has not been provided.'
+    exit 1
+  end
+  services = Bootstrap.new.create_services
+  id_token = Token.get_id_token a.email, services
+  ledger_api = LedgerApi.create id_token
+  transaction = PendingTransaction.new id: a.id,
+                                       amount: a.amount,
+                                       comment: a.comment,
+                                       account_id: a.account_id,
+                                       type_id: PendingTransaction::EXPENSE_TYPE_ID
+  ledger_api.report_pending_transaction transaction
 end

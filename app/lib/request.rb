@@ -8,9 +8,9 @@ class Request
       RestClient.get(url, params, &method(:handle_request))
     end
 
-    def post(url, params)
+    def post(url, data: {}, params: {})
       Log.debug "Processing POST #{url}"
-      RestClient.post(url, params, &method(:handle_request))
+      RestClient.post(url, data, params, &method(:handle_request))
     end
 
     private def handle_request(resp, req, result, &block)
