@@ -10,5 +10,7 @@ module EmailParser
   # - comment
   #
   def self.parse_email(_bic, _mail)
+    # TODO: Use BIC specific parser.
+    # Assign transactionid from messageId (probably make hash of it)
   end
 end
