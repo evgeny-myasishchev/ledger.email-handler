@@ -1,6 +1,6 @@
 class EmailParser
   class AgricoleParser
-    AMOUNT_REGEX = /^(?<amount>\d+(\.\d+)?)(?<currency>\w{3})(?<status>.*)$/
+    AMOUNT_REGEX = /^(?<type>-?)(?<amount>\d+(\.\d+)?)(?<currency>\w{3})(?<status>.*)$/
     class << self
       def parse_email(mail)
         body = mail.body.to_s
@@ -14,7 +14,8 @@ class EmailParser
           {
             amount: match_data[:amount],
             currency: match_data[:currency],
-            status: match_data[:status]
+            status: match_data[:status],
+            type: match_data[:type]
           }
         end
         balance_data, offset = next_data_value(offset, 'Balans=', body) do |value|
@@ -26,7 +27,7 @@ class EmailParser
         end
         comment, offset = next_data_value(offset, 'Mesto:', body)
         raw_transaction = {
-          type: PendingTransaction::EXPENSE_TYPE_ID,
+          type: amount_data[:type] == '-' ? PendingTransaction::INCOME_TYPE_ID : PendingTransaction::EXPENSE_TYPE_ID,
           date: date,
           bank_account: bank_account,
           amount: amount_data[:amount],

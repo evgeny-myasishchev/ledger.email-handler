@@ -29,10 +29,50 @@ RAW_MAIL_BODY
       expect(raw_transaction[:comment]).to eql 'PortoR221(Porto_R22)'
     end
 
-    xit 'should parse income email' do
+    it 'should parse income email' do
+      raw_body = <<RAW_MAIL_BODY
+Subject:
+
+!uvedomlenie!
+Data:20/06 09:45
+Karta:*4164
+Summa= -338UAH(Uspeshno)
+Balans= 19899.79UAH
+Mesto:PortoR221(Porto_R22)
+RAW_MAIL_BODY
+      mail = Mail.new raw_body
+      raw_transaction = subject.parse_email mail
+      expect(raw_transaction[:type]).to eql PendingTransaction::INCOME_TYPE_ID
+      expect(raw_transaction[:amount]).to eql '338'
     end
 
-    xit 'should handle decimal amount' do
+    it 'should handle decimal amount' do
+      raw_body = <<RAW_MAIL_BODY
+Subject:
+
+!uvedomlenie!
+Data:20/06 09:45
+Karta:*4164
+Summa= 338.43UAH(Uspeshno)
+Balans= 19899.79UAH
+Mesto:PortoR221(Porto_R22)
+RAW_MAIL_BODY
+      mail = Mail.new raw_body
+      raw_transaction = subject.parse_email mail
+      expect(raw_transaction[:amount]).to eql '338.43'
+      raw_body = <<RAW_MAIL_BODY
+Subject:
+
+!uvedomlenie!
+Data:20/06 09:45
+Karta:*4164
+Summa= -338.43UAH(Uspeshno)
+Balans= 19899.79UAH
+Mesto:PortoR221(Porto_R22)
+RAW_MAIL_BODY
+      mail = Mail.new raw_body
+      raw_transaction = subject.parse_email mail
+      expect(raw_transaction[:amount]).to eql '338.43'
     end
 
     xit 'should fail if start pattern not found' do
