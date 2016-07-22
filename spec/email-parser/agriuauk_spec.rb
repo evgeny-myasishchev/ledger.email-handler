@@ -1,26 +1,21 @@
 require 'mail'
+require 'app/email_parser'
 require 'app/email-parser/AGRIUAUK'
 
 describe EmailParser::AgricoleParser do
   subject { described_class }
   describe 'parse_email' do
     it 'should parse expense email' do
-      raw_body = <<RAW_MAIL_BODY
-Date: Mon, 20 Jun 2016 09:45:40 +0300 (EEST)
-From: gsm@credit-agricole.com.ua
-To: 380675461301@sms.upc.smpp
-Cc: evgmya@gmail.com
-Message-ID: <465681514.3559243.1466405140761.JavaMail.apache@pusher.upc.intranet>
-Subject:
-
+      mail = Mail.new do
+        body %(
 !uvedomlenie!
 Data:20/06 09:45
 Karta:*4164
 Summa= 338UAH(Uspeshno)
 Balans= 19899.79UAH
 Mesto:PortoR221(Porto_R22)
-RAW_MAIL_BODY
-      mail = Mail.new raw_body
+)
+      end
       raw_transaction = subject.parse_email mail
       expect(raw_transaction[:type]).to eql PendingTransaction::EXPENSE_TYPE_ID
       expect(raw_transaction[:date]).to eql DateTime.iso8601('2016-06-20T09:45')
@@ -30,52 +25,53 @@ RAW_MAIL_BODY
     end
 
     it 'should parse income email' do
-      raw_body = <<RAW_MAIL_BODY
-Subject:
-
+      mail = Mail.new do
+        body %(
 !uvedomlenie!
 Data:20/06 09:45
 Karta:*4164
 Summa= -338UAH(Uspeshno)
 Balans= 19899.79UAH
 Mesto:PortoR221(Porto_R22)
-RAW_MAIL_BODY
-      mail = Mail.new raw_body
+)
+      end
       raw_transaction = subject.parse_email mail
       expect(raw_transaction[:type]).to eql PendingTransaction::INCOME_TYPE_ID
       expect(raw_transaction[:amount]).to eql '338'
     end
 
     it 'should handle decimal amount' do
-      raw_body = <<RAW_MAIL_BODY
-Subject:
-
+      mail = Mail.new do
+        body %(
 !uvedomlenie!
 Data:20/06 09:45
 Karta:*4164
 Summa= 338.43UAH(Uspeshno)
 Balans= 19899.79UAH
 Mesto:PortoR221(Porto_R22)
-RAW_MAIL_BODY
-      mail = Mail.new raw_body
+)
+      end
       raw_transaction = subject.parse_email mail
       expect(raw_transaction[:amount]).to eql '338.43'
-      raw_body = <<RAW_MAIL_BODY
-Subject:
-
+      mail = Mail.new do
+        body %(
 !uvedomlenie!
 Data:20/06 09:45
 Karta:*4164
 Summa= -338.43UAH(Uspeshno)
 Balans= 19899.79UAH
 Mesto:PortoR221(Porto_R22)
-RAW_MAIL_BODY
-      mail = Mail.new raw_body
+)
+      end
       raw_transaction = subject.parse_email mail
       expect(raw_transaction[:amount]).to eql '338.43'
     end
 
-    xit 'should fail if start pattern not found' do
+    it 'should fail if start pattern not found' do
+      mail = Mail.new do
+        body %(Data:20/06 09:45)
+      end
+      expect { subject.parse_email mail }.to raise_error(EmailParser::ParserError, 'Start pattern not found')
     end
 
     xit 'should fail if expected attributes not found' do

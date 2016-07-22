@@ -1,10 +1,11 @@
-class EmailParser
+module EmailParser
   class AgricoleParser
     AMOUNT_REGEX = /^(?<type>-?)(?<amount>\d+(\.\d+)?)(?<currency>\w{3})(?<status>.*)$/
     class << self
       def parse_email(mail)
         body = mail.body.to_s
         offset = body.index('!uvedomlenie!')
+        raise EmailParser::ParserError, 'Start pattern not found' unless offset
         date, offset = next_data_value(offset, 'Data:', body) do |value|
           DateTime.strptime value, '%d/%m %H:%M'
         end

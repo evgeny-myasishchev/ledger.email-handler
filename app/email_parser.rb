@@ -1,4 +1,6 @@
 module EmailParser
+  class ParserError < StandardError; end
+
   #
   # Parse mail
   # Return hash with a following structure:
