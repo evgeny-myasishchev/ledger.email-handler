@@ -54,14 +54,14 @@ Mesto:PortoR221(Porto_R22)
       raw_transaction = subject.parse_email mail
       expect(raw_transaction[:amount]).to eql '338.43'
       mail = Mail.new do
-        body %(
-!uvedomlenie!
-Data:20/06 09:45
-Karta:*4164
-Summa= -338.43UAH(Uspeshno)
-Balans= 19899.79UAH
-Mesto:PortoR221(Porto_R22)
-)
+        body [
+          '!uvedomlenie!',
+          'Data:20/06 09:45',
+          'Karta:*4164',
+          'Summa= -338.43UAH(Uspeshno)',
+          'Balans= 19899.79UAH',
+          'Mesto:PortoR221(Porto_R22)'
+        ].join("\n")
       end
       raw_transaction = subject.parse_email mail
       expect(raw_transaction[:amount]).to eql '338.43'
@@ -74,16 +74,80 @@ Mesto:PortoR221(Porto_R22)
       expect { subject.parse_email mail }.to raise_error(EmailParser::ParserError, 'Start pattern not found')
     end
 
-    xit 'should fail if expected attributes not found' do
+    it 'should fail if expected attributes not found' do
+      valid_body_lines = [
+        '!uvedomlenie!',
+        'Data:20/06 09:45',
+        'Karta:*4164',
+        'Summa= -338.43UAH(Uspeshno)',
+        'Balans= 19899.79UAH',
+        'Mesto:PortoR221(Porto_R22)'
+      ]
+
+      invalid_body = valid_body_lines.dup
+      invalid_body.delete_at(1)
+      mail = Mail.new { body invalid_body.join("\n") }
+      expect { subject.parse_email mail }.to raise_error(EmailParser::ParserError, 'Data: pattern not found')
+
+      invalid_body = valid_body_lines.dup
+      invalid_body.delete_at(2)
+      mail = Mail.new { body invalid_body.join("\n") }
+      expect { subject.parse_email mail }.to raise_error(EmailParser::ParserError, 'Karta:* pattern not found')
+
+      invalid_body = valid_body_lines.dup
+      invalid_body.delete_at(3)
+      mail = Mail.new { body invalid_body.join("\n") }
+      expect { subject.parse_email mail }.to raise_error(EmailParser::ParserError, 'Summa= pattern not found')
+
+      invalid_body = valid_body_lines.dup
+      invalid_body.delete_at(4)
+      mail = Mail.new { body invalid_body.join("\n") }
+      expect { subject.parse_email mail }.to raise_error(EmailParser::ParserError, 'Balans= pattern not found')
+
+      invalid_body = valid_body_lines.dup
+      invalid_body[5] = 'invalid'
+      mail = Mail.new { body invalid_body.join("\n") }
+      expect { subject.parse_email mail }.to raise_error(EmailParser::ParserError, 'Mesto: pattern not found')
     end
 
-    xit 'should fail Summa has unexpected format' do
+    it 'should fail Summa has unexpected format' do
+      body_lines = [
+        '!uvedomlenie!',
+        'Data:20/06 09:45',
+        'Karta:*4164',
+        'Summa= -338.43(Uspeshno)',
+        'Balans= 19899.79UAH',
+        'Mesto:PortoR221(Porto_R22)'
+      ]
+      mail = Mail.new { body body_lines.join("\n") }
+      expect { subject.parse_email mail }.to raise_error(EmailParser::ParserError, 'Summa value has unexpected format')
     end
 
-    xit 'should fail Summa Balans has unexpected format' do
+    it 'should fail Balans has unexpected format' do
+      body_lines = [
+        '!uvedomlenie!',
+        'Data:20/06 09:45',
+        'Karta:*4164',
+        'Summa= -338.43UAH(Uspeshno)',
+        'Balans= 19899.79',
+        'Mesto:PortoR221(Porto_R22)'
+      ]
+      mail = Mail.new { body body_lines.join("\n") }
+      expect { subject.parse_email mail }.to raise_error(EmailParser::ParserError, 'Balans value has unexpected format')
     end
 
-    xit 'should include currency in the comment if it was different from balans' do
+    it 'should include currency in the comment if it was different from balans' do
+      body_lines = [
+        '!uvedomlenie!',
+        'Data:20/06 09:45',
+        'Karta:*4164',
+        'Summa= -338.43EUR(Uspeshno)',
+        'Balans= 19899.79UAH',
+        'Mesto:PortoR221(Porto_R22)'
+      ]
+      mail = Mail.new { body body_lines.join("\n") }
+      raw_transaction = subject.parse_email mail
+      expect(raw_transaction[:comment]).to eql('Amount is EUR. Balance 19899.79UAH. PortoR221(Porto_R22)')
     end
   end
 end
