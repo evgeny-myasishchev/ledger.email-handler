@@ -1,6 +1,9 @@
 AllCops:
   TargetRubyVersion: 2.2
   
+Metrics/AbcSize:
+  Max: 25
+
 Metrics/ParameterLists:
   CountKeywordArgs: false
 
