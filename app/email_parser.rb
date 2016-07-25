@@ -14,7 +14,7 @@ module EmailParser
   def self.parse_email(bic, mail)
     # TODO: Assign transactionid from messageId (probably make hash of it)
     begin
-      require "app/email-parser/#{bic}"
+      require "app/email_parser/#{bic}"
     rescue LoadError
       raise ParserError, "Can not find parser for bic: #{bic}"
     end

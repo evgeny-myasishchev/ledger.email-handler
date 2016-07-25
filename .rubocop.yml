@@ -20,5 +20,5 @@ Style/Documentation:
 
 Style/FileName:
   Exclude:
-    - 'app/email-parser/AGRIUAUK.rb'
-    - 'app/email-parser/TEMPLATE.rb'
+    - 'app/email_parser/AGRIUAUK.rb'
+    - 'app/email_parser/TEMPLATE.rb'

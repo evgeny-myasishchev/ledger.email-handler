@@ -1,7 +1,7 @@
 require 'mail'
 require 'app/email_parser'
-require 'app/email-parser/AGRIUAUK'
-require 'app/email-parser/TEMPLATE'
+require 'app/email_parser/AGRIUAUK'
+require 'app/email_parser/TEMPLATE'
 
 describe EmailParser do
   subject { described_class }
