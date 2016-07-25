@@ -2,7 +2,7 @@ require 'mail'
 require 'app/email_parser'
 require 'app/email-parser/AGRIUAUK'
 
-describe EmailParser::AgricoleParser do
+describe EmailParser::AGRIUAUK do
   subject { described_class }
   describe 'parse_email' do
     it 'should parse expense email' do
