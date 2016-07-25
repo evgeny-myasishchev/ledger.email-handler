@@ -1,5 +1,5 @@
 module EmailParser
-  class AgricoleParser
+  class AGRIUAUK
     AMOUNT_REGEX = /^(?<type>-?)(?<amount>\d+(\.\d+)?)(?<currency>[a-zA-Z]{3})(?<status>.*)$/
     class << self
       def parse_email(mail)

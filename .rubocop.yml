@@ -21,3 +21,4 @@ Style/Documentation:
 Style/FileName:
   Exclude:
     - 'app/email-parser/AGRIUAUK.rb'
+    - 'app/email-parser/TEMPLATE.rb'
