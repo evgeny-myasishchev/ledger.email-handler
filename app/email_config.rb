@@ -21,12 +21,18 @@ class EmailConfig
   # bic - BIC to fetch email
   # settings - Emails provider settings to get emails (see format above)
   def add_email_settings(user_email, bic, emails_provider_settings)
-    Log.debug "Adding email settings for user: #{user_email}"
+    Log.debug "Adding email settings for user: #{user_email}, bic: #{bic}"
     @config_dir.mkdir unless @config_dir.exist?
     config_file = @config_dir.join(user_email)
-    settings = {
-      bic => emails_provider_settings
-    }
+    settings = nil
+    if config_file.exist?
+      Log.debug 'Updating existing settings'
+      settings = JSON.parse config_file.read
+    else
+      Log.debug 'Initializing new settings'
+      settings = {}
+    end
+    settings[bic] = emails_provider_settings
     config_file.write JSON.generate settings
   end
 

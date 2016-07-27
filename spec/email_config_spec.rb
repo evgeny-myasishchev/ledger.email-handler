@@ -9,8 +9,8 @@ describe EmailConfig do
   let(:bic1) { fake_string('BIC1') }
   let(:bic2) { fake_string('BIC2') }
 
-  provider_settings1 = { 'option1' => fake_string('value1'), 'option2' => fake_string('value2') }
-  provider_settings2 = { 'option1' => fake_string('value1'), 'option2' => fake_string('value2') }
+  let(:provider_settings1) { { 'option1' => fake_string('value1'), 'option2' => fake_string('value2') } }
+  let(:provider_settings2) { { 'option1' => fake_string('value1'), 'option2' => fake_string('value2') } }
 
   subject { described_class.new(data_dir) }
 
@@ -28,10 +28,19 @@ describe EmailConfig do
       expect(data).to eql(bic1 => provider_settings1)
     end
 
-    xit 'should add new bic section to existing settings file' do
+    it 'should add new bic section to existing settings file' do
+      subject.add_email_settings email1, bic2, provider_settings2
+      config_file = email_config_dir.join(email1)
+      data = JSON.parse config_file.read
+      expect(data).to eql(bic1 => provider_settings1,
+                          bic2 => provider_settings2)
     end
 
-    xit 'should update existing section of bic settings' do
+    it 'should update existing section of bic settings' do
+      subject.add_email_settings email1, bic1, provider_settings2
+      config_file = email_config_dir.join(email1)
+      data = JSON.parse config_file.read
+      expect(data).to eql(bic1 => provider_settings2)
     end
   end
 
