@@ -38,5 +38,8 @@ class EmailConfig
 
   # Returns emails provider settings for given ledger user_email (see format above)
   def get_email_settings(user_email)
+    config_file = @config_dir.join(user_email)
+    raise "Email settings for user '#{user_email}' not found" unless config_file.exist?
+    JSON.parse config_file.read
   end
 end

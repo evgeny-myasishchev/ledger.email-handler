@@ -45,10 +45,12 @@ describe EmailConfig do
   end
 
   describe 'get_email_settings' do
-    xit 'should return settings of given user' do
+    it 'should return settings of given user' do
+      expect(subject.get_email_settings(email1)).to eql(bic1 => provider_settings1)
     end
 
-    xit 'should raise error if settings not found' do
+    it 'should raise error if settings not found' do
+      expect { subject.get_email_settings(email2) }.to raise_error "Email settings for user '#{email2}' not found"
     end
   end
 end
