@@ -1,5 +1,7 @@
 class EmailConfig
+  Log = Logger.get self
   def initialize(data_dir)
+    @config_dir = data_dir.join('email-config')
   end
 
   # Email provider settings example
@@ -19,6 +21,13 @@ class EmailConfig
   # bic - BIC to fetch email
   # settings - Emails provider settings to get emails (see format above)
   def add_email_settings(user_email, bic, emails_provider_settings)
+    Log.debug "Adding email settings for user: #{user_email}"
+    @config_dir.mkdir unless @config_dir.exist?
+    config_file = @config_dir.join(user_email)
+    settings = {
+      bic => emails_provider_settings
+    }
+    config_file.write JSON.generate settings
   end
 
   # Returns emails provider settings for given ledger user_email (see format above)

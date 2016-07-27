@@ -31,8 +31,8 @@ module FakeFactory
     }
   end
 
-  def fake_email
-    FFaker::Internet.email
+  def fake_email(name = nil)
+    FFaker::Internet.email name
   end
 
   def fake_string(prefix, length: 10)
