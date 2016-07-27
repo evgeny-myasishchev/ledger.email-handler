@@ -4,6 +4,12 @@ class EmailsProvider
     raise 'Not implemented'
   end
 
+  def self.create(_provider_settings)
+    # TODO: create and return provider using settings
+    # Expected format see in email_config.rb
+    # Short example: { bic => { pop3: {...} } }
+  end
+
   # Used for testing purposes
   class InMemoryEmailsProvider < EmailsProvider
     attr_reader :emails
