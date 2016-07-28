@@ -2,7 +2,30 @@ require 'mail'
 require 'app/emails_provider'
 
 describe EmailsProvider do
-  describe described_class::InMemoryEmailsProvider do
+  describe 'create' do
+    it 'should create new instance of InMemory provider with emails as an input' do
+      mail1 = Mail.new 'Message-ID' => 'email1'
+      mail2 = Mail.new 'Message-ID' => 'email2'
+      provider = described_class.create('in-memory' => [mail1, mail2])
+      expect(provider).to be_an_instance_of EmailsProvider::InMemory
+      expect(provider.emails).to eql [mail1, mail2]
+    end
+
+    it 'should create new instance of Pop3 provider with settings as an input' do
+      pop3_settings = { 'pop3' => { settings: fake_string('fake-settings') } }
+      provider = described_class.create(pop3_settings)
+      expect(provider).to be_an_instance_of EmailsProvider::Pop3
+      expect(provider.settings).to eql pop3_settings['pop3']
+    end
+
+    it 'should raise error if provider is not known' do
+      provider_id = fake_string 'not-supported'
+      not_supported_settings = { provider_id => { settings: fake_string('fake-settings') } }
+      expect { described_class.create(not_supported_settings) }.to raise_error "Provider '#{provider_id}' is not supported"
+    end
+  end
+
+  describe described_class::InMemory do
     let(:email1) { Mail.new 'Message-ID' => 'email1' }
     let(:email2) { Mail.new 'Message-ID' => 'email2' }
     let(:email3) { Mail.new 'Message-ID' => 'email3' }

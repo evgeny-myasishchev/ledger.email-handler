@@ -4,14 +4,15 @@ class EmailsProvider
     raise 'Not implemented'
   end
 
-  def self.create(_provider_settings)
-    # TODO: create and return provider using settings
-    # Expected format see in email_config.rb
-    # Short example: { bic => { pop3: {...} } }
+  def self.create(provider_settings)
+    return InMemory.new(provider_settings['in-memory']) if provider_settings.key?('in-memory')
+    return Pop3.new(provider_settings['pop3']) if provider_settings.key?('pop3')
+
+    raise "Provider '#{provider_settings.keys.first}' is not supported"
   end
 
   # Used for testing purposes
-  class InMemoryEmailsProvider < EmailsProvider
+  class InMemory < EmailsProvider
     attr_reader :emails
     def initialize(emails)
       @emails = emails.dup
@@ -25,6 +26,10 @@ class EmailsProvider
     end
   end
 
-  class Pop3EmailsProvider < EmailsProvider
+  class Pop3 < EmailsProvider
+    attr_reader :settings
+    def initialize(pop3_settings)
+      @settings = pop3_settings
+    end
   end
 end
