@@ -53,4 +53,14 @@ describe EmailConfig do
       expect { subject.get_email_settings(email2) }.to raise_error "Email settings for user '#{email2}' not found"
     end
   end
+
+  describe 'all_email_settings' do
+    it 'should return settings of all users' do
+      subject.add_email_settings email2, bic2, provider_settings2
+      expect(subject.all_email_settings).to eql [
+        { email1 => { bic1 => provider_settings1 } },
+        { email2 => { bic2 => provider_settings2 } }
+      ]
+    end
+  end
 end

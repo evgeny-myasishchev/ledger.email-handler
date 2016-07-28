@@ -42,4 +42,14 @@ class EmailConfig
     raise "Email settings for user '#{user_email}' not found" unless config_file.exist?
     JSON.parse config_file.read
   end
+
+  # Returns an array of results returned by get_email_settings keyed by user_email:
+  # [
+  #   { 'mail@domain.com' => { ...object returned by get_email_settings... } }
+  # ]
+  def all_email_settings
+    @config_dir.children(false).map do |path|
+      { path.basename.to_s => get_email_settings(path.basename) }
+    end
+  end
 end
