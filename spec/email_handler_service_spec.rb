@@ -1,3 +1,4 @@
+require 'mail'
 require 'app/lib/services'
 require 'app/email_handler_service'
 
@@ -10,9 +11,16 @@ describe EmailHandlerService do
   let(:bic1) { fake_string('BIC1') }
   let(:bic2) { fake_string('BIC2') }
 
-  let(:provider_settings11) { { 'option11' => fake_string('value11') } }
-  let(:provider_settings12) { { 'option12' => fake_string('value12') } }
-  let(:provider_settings21) { { 'option21' => fake_string('value21') } }
+  let(:mail111) { Mail.new 'Message-ID' => 'email111' }
+  let(:mail112) { Mail.new 'Message-ID' => 'email112' }
+  let(:mail121) { Mail.new 'Message-ID' => 'email121' }
+  let(:mail122) { Mail.new 'Message-ID' => 'email122' }
+  let(:mail211) { Mail.new 'Message-ID' => 'mail211' }
+  let(:mail212) { Mail.new 'Message-ID' => 'mail212' }
+
+  let(:provider_settings11) { { 'in-memory' => [mail111, mail112] } }
+  let(:provider_settings12) { { 'in-memory' => [mail121, mail122] } }
+  let(:provider_settings21) { { 'in-memory' => [mail211, mail212] } }
 
   before(:each) do
     FileUtils.rm_rf data_dir if data_dir.exist?
