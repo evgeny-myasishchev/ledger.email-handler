@@ -21,25 +21,23 @@ describe EmailConfig do
   end
 
   describe 'add_email_settings' do
-    it 'should create new config file with user settings for given bic' do
+    it 'should create new settings with user settings for given bic' do
       config_file = email_config_dir.join(email1)
       expect(config_file).to exist
-      data = JSON.parse config_file.read
+      data = subject.get_email_settings email1
       expect(data).to eql(bic1 => provider_settings1)
     end
 
-    it 'should add new bic section to existing settings file' do
+    it 'should add new bic section to existing settings' do
       subject.add_email_settings email1, bic2, provider_settings2
-      config_file = email_config_dir.join(email1)
-      data = JSON.parse config_file.read
+      data = subject.get_email_settings email1
       expect(data).to eql(bic1 => provider_settings1,
                           bic2 => provider_settings2)
     end
 
     it 'should update existing section of bic settings' do
       subject.add_email_settings email1, bic1, provider_settings2
-      config_file = email_config_dir.join(email1)
-      data = JSON.parse config_file.read
+      data = subject.get_email_settings email1
       expect(data).to eql(bic1 => provider_settings2)
     end
   end
@@ -56,9 +54,13 @@ describe EmailConfig do
 
   describe 'all_email_settings' do
     it 'should return settings of all users' do
+      subject.add_email_settings email1, bic2, provider_settings2
       subject.add_email_settings email2, bic2, provider_settings2
       expect(subject.all_email_settings).to eql [
-        { email1 => { bic1 => provider_settings1 } },
+        { email1 => {
+          bic1 => provider_settings1,
+          bic2 => provider_settings2
+        } },
         { email2 => { bic2 => provider_settings2 } }
       ]
     end
