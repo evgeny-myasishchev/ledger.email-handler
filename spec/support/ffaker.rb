@@ -3,16 +3,27 @@ require 'jwt'
 require 'app/pending_transaction'
 
 module FakeFactory
-  def build_pending_transaction
-    types = [PendingTransaction::INCOME_TYPE_ID, PendingTransaction::EXPENSE_TYPE_ID]
+  TRANSACTION_TYPES = [PendingTransaction::INCOME_TYPE_ID, PendingTransaction::EXPENSE_TYPE_ID].freeze
 
+  def build_raw_transaction(bank_account: fake_string('bank-account'))
+    {
+      id: fake_string('tid'),
+      amount: SecureRandom.random_number,
+      date: FFaker::Time.date,
+      comment: FFaker::Lorem.phrase,
+      bank_account: bank_account,
+      type_id: TRANSACTION_TYPES[SecureRandom.random_number(TRANSACTION_TYPES.length)]
+    }
+  end
+
+  def build_pending_transaction
     PendingTransaction.new(
       id: fake_string('tid'),
       amount: SecureRandom.random_number,
       date: FFaker::Time.date,
       comment: FFaker::Lorem.phrase,
       account_id: fake_string('aid'),
-      type_id: types[SecureRandom.random_number(types.length)]
+      type_id: TRANSACTION_TYPES[SecureRandom.random_number(TRANSACTION_TYPES.length)]
     )
   end
 

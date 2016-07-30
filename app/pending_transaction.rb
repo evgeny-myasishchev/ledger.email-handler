@@ -15,7 +15,17 @@ class PendingTransaction
     }
   end
 
-  def self.build(_accounts_mapping_cfg, _raw_transaction)
-    # map
+  def self.build(accounts_mapping_cfg, raw_transaction)
+    bank_account = raw_transaction[:bank_account]
+    unless accounts_mapping_cfg.key?(bank_account)
+      raise "Can not build pending transaction id='#{raw_transaction[:id]}'. Mapping for bank account '#{bank_account}' not found."
+    end
+    ledger_account_id = accounts_mapping_cfg[bank_account]
+    new(id: raw_transaction[:id],
+        amount: raw_transaction[:amount],
+        date: raw_transaction[:date],
+        comment: raw_transaction[:comment],
+        account_id: ledger_account_id,
+        type_id: raw_transaction[:type_id])
   end
 end
