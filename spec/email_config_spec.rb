@@ -59,7 +59,7 @@ describe EmailConfig do
     end
   end
 
-  describe 'InMemory', focus: true do
+  describe 'InMemory' do
     it_behaves_like 'standard email config'
     subject { described_class::InMemory.new }
   end
