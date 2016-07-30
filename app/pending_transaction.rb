@@ -15,6 +15,10 @@ class PendingTransaction
     }
   end
 
+  def inspect
+    "PendingTransaction#{@data.to_json}"
+  end
+
   def self.build(accounts_mapping_cfg, raw_transaction)
     bank_account = raw_transaction[:bank_account]
     unless accounts_mapping_cfg.key?(bank_account)
