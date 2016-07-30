@@ -1,4 +1,6 @@
 class EmailsProvider
+  Log = Logger.get self
+
   # Yield block for each available email
   def each(&_block)
     raise 'Not implemented'
@@ -15,6 +17,7 @@ class EmailsProvider
   class InMemory < EmailsProvider
     attr_reader :emails
     def initialize(emails)
+      Log.debug "Initializing in-memory provider with #{emails.length} emails."
       @emails = emails.dup
     end
 
@@ -29,6 +32,7 @@ class EmailsProvider
   class Pop3 < EmailsProvider
     attr_reader :settings
     def initialize(pop3_settings)
+      Log.debug 'Initializing pop3 provider'
       @settings = pop3_settings
     end
   end

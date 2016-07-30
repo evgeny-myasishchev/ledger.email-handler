@@ -54,4 +54,29 @@ describe PendingTransaction do
       end.to raise_error "Can not build pending transaction id='#{raw_tran[:id]}'. Mapping for bank account '#{raw_tran[:bank_account]}' not found."
     end
   end
+
+  describe 'equality' do
+    let(:raw_t1) { build_raw_transaction }
+    let(:raw_t2) { build_raw_transaction }
+    let(:mapping_cfg) do
+      {
+        raw_t1[:bank_account] => fake_string('ledger-account'),
+        raw_t2[:bank_account] => fake_string('ledger-account')
+      }
+    end
+    let(:t11) { described_class.build(mapping_cfg, raw_t1) }
+    let(:t12) { described_class.build(mapping_cfg, raw_t1) }
+    let(:t2) { described_class.build(mapping_cfg, raw_t2) }
+    it 'should compare object contents when using == or eql? operators' do
+      expect(t11 == t12).to be true
+      expect(t11.eql?(t12)).to be true
+      expect(t11 == t2).to be false
+      expect(t11.eql?(t2)).to be false
+    end
+
+    it 'should compare object identity when using equal? operator' do
+      expect(t11.equal?(t11)).to be true
+      expect(t12.equal?(t11)).to be false
+    end
+  end
 end
