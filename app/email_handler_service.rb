@@ -27,6 +27,8 @@ class EmailHandlerService
           pending_transaction = PendingTransaction.build account_mappings, raw_transaction
           Log.debug "Submitting pending transaction to ledger: #{pending_transaction}"
           ledger_api.report_pending_transaction pending_transaction
+
+          # TODO: Extend provider to remove email
         end
       end
     end
