@@ -5,11 +5,11 @@ module EmailParser
   # Parse mail
   # Return hash with a following structure:
   # - id
-  # - type
-  # - bank_account
   # - amount
   # - date
   # - comment
+  # - bank_account
+  # - type_id
   #
   def self.parse_email(bic, mail)
     # TODO: Assign transactionid from messageId (probably make hash of it)

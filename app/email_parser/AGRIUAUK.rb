@@ -59,11 +59,11 @@ module EmailParser
         end
 
         {
-          type: amount_data[:type] == '-' ? PendingTransaction::INCOME_TYPE_ID : PendingTransaction::EXPENSE_TYPE_ID,
-          date: date,
-          bank_account: bank_account,
           amount: amount_data[:amount],
-          comment: comment
+          date: date,
+          comment: comment,
+          bank_account: bank_account,
+          type_id: amount_data[:type] == '-' ? PendingTransaction::INCOME_TYPE_ID : PendingTransaction::EXPENSE_TYPE_ID
         }
       end
     end

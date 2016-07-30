@@ -17,7 +17,7 @@ Mesto:PortoR221(Porto_R22)
 )
       end
       raw_transaction = subject.parse_email mail
-      expect(raw_transaction[:type]).to eql PendingTransaction::EXPENSE_TYPE_ID
+      expect(raw_transaction[:type_id]).to eql PendingTransaction::EXPENSE_TYPE_ID
       expect(raw_transaction[:date]).to eql DateTime.iso8601('2016-06-20T09:45')
       expect(raw_transaction[:bank_account]).to eql '4164'
       expect(raw_transaction[:amount]).to eql '338'
@@ -36,7 +36,7 @@ Mesto:PortoR221(Porto_R22)
 )
       end
       raw_transaction = subject.parse_email mail
-      expect(raw_transaction[:type]).to eql PendingTransaction::INCOME_TYPE_ID
+      expect(raw_transaction[:type_id]).to eql PendingTransaction::INCOME_TYPE_ID
       expect(raw_transaction[:amount]).to eql '338'
     end
 
