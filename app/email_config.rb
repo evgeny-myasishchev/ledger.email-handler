@@ -23,10 +23,11 @@ class EmailConfig
     def get_email_settings(user_email)
     end
 
-    # Returns an array of results returned by get_email_settings keyed by user_email:
-    # [
-    #   { 'mail@domain.com' => { ...object returned by get_email_settings... } }
-    # ]
+    # Returns hash of results returned by get_email_settings keyed by user_email:
+    # {
+    #   'mail1@domain.com' => { ...object returned by get_email_settings... },
+    #   'mail2@domain.com' => { ...object returned by get_email_settings... }
+    # }
     def all_email_settings
     end
   end
@@ -49,7 +50,7 @@ class EmailConfig
     end
 
     def all_email_settings
-      @storage.map { |k, v| { k => v } }
+      @storage.dup
     end
   end
 
@@ -85,9 +86,9 @@ class EmailConfig
     end
 
     def all_email_settings
-      @config_dir.children(false).map do |path|
-        { path.basename.to_s => get_email_settings(path.basename) }
-      end
+      Hash[@config_dir.children(false).collect do |path|
+        [path.basename.to_s, get_email_settings(path.basename)]
+      end]
     end
   end
 end
