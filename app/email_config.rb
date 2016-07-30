@@ -12,25 +12,49 @@ class EmailConfig
   #   }
   # }
 
-  # user_email - email of the ledger user_email
-  # bic - BIC to fetch email
-  # settings - Emails provider settings to get emails (see format above)
-  def add_email_settings(user_email, bic, emails_provider_settings)
+  class Base
+    # user_email - email of the ledger user_email
+    # bic - BIC to fetch email
+    # settings - Emails provider settings to get emails (see format above)
+    def add_email_settings(user_email, bic, emails_provider_settings)
+    end
+
+    # Returns emails provider settings for given ledger user_email (see format above)
+    def get_email_settings(user_email)
+    end
+
+    # Returns an array of results returned by get_email_settings keyed by user_email:
+    # [
+    #   { 'mail@domain.com' => { ...object returned by get_email_settings... } }
+    # ]
+    def all_email_settings
+    end
   end
 
-  # Returns emails provider settings for given ledger user_email (see format above)
-  def get_email_settings(user_email)
-  end
+  # In memory email config
+  class InMemory < Base
+    def initialize
+      @storage = {}
+    end
 
-  # Returns an array of results returned by get_email_settings keyed by user_email:
-  # [
-  #   { 'mail@domain.com' => { ...object returned by get_email_settings... } }
-  # ]
-  def all_email_settings
+    def add_email_settings(user_email, bic, emails_provider_settings)
+      user_store = @storage.fetch(user_email, {})
+      user_store[bic] = emails_provider_settings
+      @storage[user_email] = user_store
+    end
+
+    def get_email_settings(user_email)
+      raise "Email settings for user '#{user_email}' not found" unless @storage.key?(user_email)
+      @storage[user_email]
+    end
+
+    def all_email_settings
+      @storage.map { |k, v| { k => v } }
+    end
   end
 
   # File based email config
-  class FS
+  class FS < Base
     Log = Logger.get self
 
     def initialize(data_dir)

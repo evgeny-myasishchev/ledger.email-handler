@@ -16,8 +16,6 @@ describe EmailConfig do
 
     describe 'add_email_settings' do
       it 'should create new settings with user settings for given bic' do
-        config_file = email_config_dir.join(email1)
-        expect(config_file).to exist
         data = subject.get_email_settings email1
         expect(data).to eql(bic1 => provider_settings1)
       end
@@ -59,6 +57,11 @@ describe EmailConfig do
         ]
       end
     end
+  end
+
+  describe 'InMemory', focus: true do
+    it_behaves_like 'standard email config'
+    subject { described_class::InMemory.new }
   end
 
   describe 'FS' do

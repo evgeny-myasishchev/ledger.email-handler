@@ -9,6 +9,6 @@ class Services
   def initialize(data_dir)
     @access_token_repo = AccessTokenRepository.new data_dir
     @accounts_mapping_config = AccountsMappingConfig.new data_dir
-    @email_config = EmailConfig.new data_dir
+    @email_config = EmailConfig::FS.new data_dir
   end
 end
