@@ -5,9 +5,9 @@ require 'app/pending_transaction'
 module FakeFactory
   TRANSACTION_TYPES = [PendingTransaction::INCOME_TYPE_ID, PendingTransaction::EXPENSE_TYPE_ID].freeze
 
-  def build_raw_transaction(bank_account: fake_string('bank-account'))
+  def build_raw_transaction(bank_account: fake_string('bank-account'), id: fake_string('tid'))
     {
-      id: fake_string('tid'),
+      id: id,
       amount: SecureRandom.random_number,
       date: FFaker::Time.date,
       comment: FFaker::Lorem.phrase,
