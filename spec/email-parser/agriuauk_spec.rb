@@ -24,6 +24,45 @@ Mesto:PortoR221(Porto_R22)
       expect(raw_transaction[:comment]).to eql 'PortoR221(Porto_R22)'
     end
 
+    it 'should parse expense multipart body' do
+      mail = Mail.new %(
+Content-Type: multipart/alternative; boundary=089e011764955664e70538e1a99d
+
+--089e011764955664e70538e1a99d
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+!uvedomlenie!
+Data:20/06 09:45
+Karta:*4164
+Summa= 338UAH(Uspeshno)
+Balans= 19899.79UAH
+Mesto:PortoR221(Porto_R22)
+
+--089e011764955664e70538e1a99d
+Content-Type: text/html;
+ charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+<div>
+!uvedomlenie!
+Data:20/06 09:45
+Karta:*4164
+Summa= 338UAH(Uspeshno)
+Balans= 19899.79UAH
+Mesto:PortoR221(Porto_R22)
+</div>
+
+--089e011764955664e70538e1a99d--
+)
+      raw_transaction = subject.parse_email mail
+      expect(raw_transaction[:type_id]).to eql PendingTransaction::EXPENSE_TYPE_ID
+      expect(raw_transaction[:date]).to eql DateTime.iso8601('2016-06-20T09:45')
+      expect(raw_transaction[:bank_account]).to eql '4164'
+      expect(raw_transaction[:amount]).to eql '338'
+      expect(raw_transaction[:comment]).to eql 'PortoR221(Porto_R22)'
+    end
+
     it 'should parse income email' do
       mail = Mail.new do
         body %(
