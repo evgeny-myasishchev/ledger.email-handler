@@ -27,12 +27,13 @@ describe EmailParser do
       end.to raise_error EmailParser::ParserError, "Can not find parser for bic: #{not_existing_bic}"
     end
 
-    it 'should assign transactionId from mail for each transaction' do
+    it 'should assign transactionId from mail Message-ID (as sha256 hash) for each transaction' do
       template_parser = EmailParser::TEMPLATE
       allow(template_parser).to receive(:parse_email) { { value: 'dummy-result-2' } }
       transaction = subject.parse_email('TEMPLATE', mail)
-      expected_id = mail['Message-ID'].to_s
+      expected_id = Base64.urlsafe_encode64 Digest::SHA256.digest mail['Message-ID'].to_s
       expect(transaction[:id]).to eql(expected_id)
+      expect(transaction[:id].length).to be <= 50
     end
   end
 end

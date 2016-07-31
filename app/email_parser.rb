@@ -1,3 +1,6 @@
+require 'digest'
+require 'base64'
+
 module EmailParser
   class ParserError < StandardError; end
 
@@ -20,7 +23,7 @@ module EmailParser
     end
     parser = EmailParser.const_get bic
     transaction = parser.parse_email mail
-    transaction[:id] = mail['Message-ID'].to_s
+    transaction[:id] = Base64.urlsafe_encode64 Digest::SHA256.digest mail['Message-ID'].to_s
     transaction
   end
 end
