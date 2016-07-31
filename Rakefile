@@ -5,6 +5,7 @@ require 'app/google_auth_api'
 require 'app/token'
 require 'app/ledger_api'
 require 'app/pending_transaction'
+require 'app/email_handler_service'
 require 'jwt'
 
 desc 'Show code prompt'
@@ -51,16 +52,35 @@ task :'refresh-token', [:email] do |_t, a|
 end
 
 desc 'Show ledger accounts'
-task :'show-ledger-accounts', [:email] do |_t, a|
-  unless a.email
-    puts 'email has not been provided.'
+task :'show-ledger-accounts', [:user_email] do |_t, a|
+  unless a.user_email
+    puts 'user_email has not been provided.'
     exit 1
   end
   services = Bootstrap.new.create_services
-  id_token = Token.get_id_token a.email, services
+  id_token = Token.get_id_token a.user_email, services
   ledger_api = LedgerApi.create id_token
   accounts = ledger_api.accounts
   puts JSON.pretty_generate(accounts)
+end
+
+desc 'Add mapping of bank account to ledger account'
+task :'add-account-mapping', [:user_email, :bank_account, :ledger_account_id] do |_t, a|
+  unless a.user_email
+    puts 'user_email has not been provided.'
+    exit 1
+  end
+  unless a.bank_account
+    puts 'bank_account has not been provided.'
+    exit 1
+  end
+  unless a.ledger_account_id
+    puts 'ledger_account_id has not been provided.'
+    exit 1
+  end
+  services = Bootstrap.new.create_services
+  services.accounts_mapping_config.add_mapping a.user_email, a.bank_account, a.ledger_account_id
+  puts "Account mapping added. User: #{a.user_email}, bank account: #{a.bank_account}, ledger account: #{a.ledger_account_id}"
 end
 
 desc 'Report pending transaction'
@@ -80,8 +100,19 @@ task :'report-pending-transaction', [:email, :id, :amount, :comment, :account_id
   ledger_api.report_pending_transaction transaction
 end
 
+desc 'Handle emails for all configured users'
+task :'handle-emails' do
+  services = Bootstrap.new.create_services
+  begin
+    EmailHandlerService.handle_emails services
+  rescue => e
+    Logger.get(EmailHandlerService).error %(Failed to handle emails: #{e}\nBacktrace:\n  #{e.backtrace.join("\n  ")})
+    raise
+  end
+end
+
 desc 'Add email config'
-task :add_email_config, [:user_email, :bic, :settings] do |_t, a|
+task :'add-email-config', [:user_email, :bic, :settings] do |_t, a|
   unless a.user_email
     puts 'user_email should be provided'
     exit 1

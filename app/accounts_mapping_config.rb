@@ -1,6 +1,7 @@
 require 'json'
 
 class AccountsMappingConfig
+  Log = Logger.get self
   def initialize(data_dir)
     @config_dir = data_dir.join('accounts-mapping')
   end
@@ -18,6 +19,7 @@ class AccountsMappingConfig
   end
 
   def get_mappings(user_email)
+    Log.debug "Getting accounts mapping for user #{user_email}"
     target_file = build_target_file(user_email)
     JSON.parse(target_file.read)
   end

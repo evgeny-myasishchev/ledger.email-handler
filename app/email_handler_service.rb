@@ -1,4 +1,5 @@
 require 'app/emails_provider'
+require 'app/email_parser'
 require 'app/token'
 
 class EmailHandlerService
@@ -32,5 +33,6 @@ class EmailHandlerService
         end
       end
     end
+    Log.info 'Emails handled.'
   end
 end

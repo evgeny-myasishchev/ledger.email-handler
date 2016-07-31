@@ -4,9 +4,20 @@ Service that parses bank emails with transactions and submits pending transactio
 
 # Configuring
 
+Adding mapping of bank account to ledger account.
+First see ids of each ledger account for given user:
+```
+rake show-ledger-accounts[user@gmail.com]
+```
+
+Then for each bank account add mapping to ledger account. Bank account is the one that will be in the email
+```
+rake add-account-mapping[user@gmail.com,1111,3d2e57ac-0418-41aa-ad63-4ef08063915f]
+```
+
 Adding email config to get emails from:
 ```
-rake add_email_config[ledger-user,BIC,'{"pop3":{"address":"pop.gmail.com"\,"port"
+rake add-email-config[ledger-user,BIC,'{"pop3":{"address":"pop.gmail.com"\,"port"
 :995\,"account":"user@gmail.com"\,"password":"password"}}']
 ```
 
@@ -29,6 +40,12 @@ Where:
 }
 ```
 
+# Invoking
+
+To invoke worker that will handle emails of all configured users and submit them to ledger as pending transactions:
+```
+rake handle-emails
+```
 
 # Contributing
 ## Before push
