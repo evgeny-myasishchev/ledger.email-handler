@@ -1,3 +1,6 @@
+require 'net/pop'
+require 'mail'
+
 class EmailsProvider
   Log = Logger.get self
 
@@ -29,11 +32,42 @@ class EmailsProvider
     end
   end
 
+  # Pop3 provider settings
+  # {
+  #   address: 'pop.gmail.com',
+  #   port: 995,
+  #   requires_ssl: true, # Optional, default true
+  #   account: 'name@gmail.com',
+  #   password: 'password',
+  #   autoremove: false # Optional, default false. Note: set to true if your provider will fetch again previously fetched.
+  # }
   class Pop3 < EmailsProvider
     attr_reader :settings
     def initialize(pop3_settings)
       Log.debug 'Initializing pop3 provider'
-      @settings = pop3_settings
+      @settings = {
+        address: nil,
+        port: nil,
+        requires_ssl: true,
+        acccount: nil,
+        password: nil,
+        autoremove: false
+      }.merge pop3_settings
+    end
+
+    def each
+      pop3 = Net::POP3.new(@settings['address'], @settings['port'])
+      pop3.enable_ssl if @settings['requires_ssl']
+      pop3.start(@settings['account'], @settings['password'])
+      begin
+        pop3.each_mail do |pop_mail|
+          mail = Mail.new pop_mail.pop
+          yield mail
+          pop_mail.delete if @settings['autoremove']
+        end
+      ensure
+        pop3.finish
+      end
     end
   end
 end

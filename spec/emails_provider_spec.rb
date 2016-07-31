@@ -15,7 +15,7 @@ describe EmailsProvider do
       pop3_settings = { 'pop3' => { settings: fake_string('fake-settings') } }
       provider = described_class.create(pop3_settings)
       expect(provider).to be_an_instance_of EmailsProvider::Pop3
-      expect(provider.settings).to eql pop3_settings['pop3']
+      expect(provider.settings).to include pop3_settings['pop3']
     end
 
     it 'should raise error if provider is not known' do
