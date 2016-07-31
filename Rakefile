@@ -134,14 +134,3 @@ task :'add-email-config', [:user_email, :bic, :settings] do |_t, a|
   provider_settings = JSON.parse(a.settings)
   services.email_config.add_email_settings a.user_email, a.bic, provider_settings
 end
-
-desc 'Test pop3 email provider'
-task :pop3_test, [:user_email] do |_t, a|
-  services = Bootstrap.new.create_services
-  provider_settings = services.email_config.get_email_settings a.user_email
-  require 'app/emails_provider'
-  provider = EmailsProvider.create provider_settings['AGRIUAUK']
-  provider.each do |mail|
-    puts mail
-  end
-end
