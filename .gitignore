@@ -6,7 +6,7 @@
 tmp
 
 # Local configs
-config/*.local.yml
+config/**/*.local.yml
 
 # Logging
 log
