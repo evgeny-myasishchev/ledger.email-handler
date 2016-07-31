@@ -2,10 +2,11 @@ namespace :test do
   desc 'Send to mailtrap'
   task :'send-to-mailtrap', [:user, :password, :message_path] do |_t, a|
     require 'net/smtp'
-    message = File.read a.message_path
+    message = Mail.new File.read a.message_path
+    message['Message-ID'] = "fake-message-#{SecureRandom.hex(20)}"
 
     Net::SMTP.start('mailtrap.io', 2525, 'mailtrap.io', a.user, a.password, :cram_md5) do |smtp|
-      smtp.send_message message, 'from@mailtrap.io', 'to@mailtrap.io'
+      smtp.send_message message.to_s, 'from@mailtrap.io', 'to@mailtrap.io'
     end
   end
 
