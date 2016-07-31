@@ -1,4 +1,5 @@
 require File.expand_path 'boot', __dir__
+Dir.glob('tasks/*.rake').each { |r| load r }
 require 'uri'
 require 'app/bootstrap'
 require 'app/google_auth_api'
