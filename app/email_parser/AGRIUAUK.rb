@@ -1,5 +1,5 @@
 module EmailParser
-  class AGRIUAUK
+  class AGRIUAUK < BaseParser
     AMOUNT_REGEX = /^(?<type>-?)(?<amount>\d+(\.\d+)?)(?<currency>[a-zA-Z]{3})(?<status>.*)$/
     class << self
       def parse_email(mail)
@@ -14,11 +14,6 @@ module EmailParser
       end
 
       private
-
-      def extract_body(mail)
-        return mail.parts[0].to_s if mail.multipart?
-        mail.body.to_s
-      end
 
       def detect_start(body)
         offset = body.index('!uvedomlenie!')

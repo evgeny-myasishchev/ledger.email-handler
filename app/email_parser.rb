@@ -4,6 +4,15 @@ require 'base64'
 module EmailParser
   class ParserError < StandardError; end
 
+  class BaseParser
+    class << self
+      protected def extract_body(mail)
+        return mail.parts[0].to_s if mail.multipart?
+        mail.body.to_s
+      end
+    end
+  end
+
   #
   # Parse mail
   # Return hash with a following structure:
