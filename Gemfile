@@ -14,6 +14,6 @@ group :development, :test do
   gem 'guard-rubocop'
   gem 'rspec'
   gem 'guard-rspec', require: false
-  gem 'ffaker'
+  gem 'ffaker', git: 'https://github.com/ffaker/ffaker'
   gem 'webmock'
 end

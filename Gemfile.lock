@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/ffaker/ffaker
+  revision: fe00f487d67a104de1c2cb201bf40c741ba5fff6
+  specs:
+    ffaker (2.2.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -19,7 +25,6 @@ GEM
     diff-lcs (1.2.5)
     domain_name (0.5.20160615)
       unf (>= 0.0.5, < 1.0.0)
-    ffaker (2.2.0)
     ffi (1.9.10)
     formatador (0.2.5)
     guard (2.14.0)
@@ -123,7 +128,7 @@ PLATFORMS
 
 DEPENDENCIES
   config
-  ffaker
+  ffaker!
   guard-rspec
   guard-rubocop
   jwt
