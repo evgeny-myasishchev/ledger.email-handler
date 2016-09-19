@@ -5,6 +5,14 @@ require 'app/pending_transaction'
 module FakeFactory
   TRANSACTION_TYPES = [PendingTransaction::INCOME_TYPE_ID, PendingTransaction::EXPENSE_TYPE_ID].freeze
 
+  def fake_currency
+    FFaker::Currency.code
+  end
+
+  def fake_amount
+    "#{SecureRandom.random_number(1000)}.#{SecureRandom.random_number(100).to_s.rjust(2, '0')}"
+  end
+
   def build_raw_transaction(bank_account: fake_string('bank-account'), id: fake_string('tid'))
     {
       id: id,
