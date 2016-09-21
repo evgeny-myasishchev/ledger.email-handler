@@ -10,7 +10,9 @@ describe EmailParser::PBANUA2X do
   end
 
   def new_mail(&block)
-    Mail.new('Message-ID' => fake_string('MSG-ID'), &block)
+    mail = Mail.new('Message-ID' => fake_string('MSG-ID'), &block)
+    mail.date DateTime.now unless mail.date
+    mail
   end
 
   describe 'parse_email' do
@@ -25,7 +27,7 @@ describe EmailParser::PBANUA2X do
       mail = new_mail do
         date date.iso8601
         body %(
-#{amount}#{currency} #{description} #{account} #{time} Бал. 1824.88UAH Бал. Бонус+ 135.40UAH
+#{amount}#{currency} #{description} #{account} #{time} Бал. 1824.88#{currency} Бал. Бонус+ 135.40UAH
 Lorem ipsum dolor sit amet
 )
       end
@@ -44,22 +46,6 @@ Lorem ipsum dolor sit amet
       end
       raw_transaction = subject.parse_email mail
       expect(raw_transaction[:type_id]).to eql PendingTransaction::INCOME_TYPE_ID
-    end
-
-    it 'should match different currency and extract calculate actual amount' do
-      currency = fake_currency
-      amount = fake_amount
-
-      balance_currency = fake_currency
-      balance_amount = fake_amount
-
-      mail = new_mail do
-        date DateTime.now
-        body %(#{amount}#{currency} Iнтернет-магазин LONDON 2*43 10:03 Бал. #{balance_amount}#{balance_currency} Курс 26.6666 UAH/USD Кред.лiм 1UAH)
-      end
-      raw_transaction = subject.parse_email mail
-      expect(raw_transaction[:amount]).to eql((amount.to_f * 26.6666).round(2))
-      expect(raw_transaction[:comment]).to eql("Iнтернет-магазин LONDON. Actual amount #{amount}#{currency} Курс 26.6666")
     end
 
     it 'should raise error if has no leading amount' do
@@ -105,6 +91,42 @@ Lorem ipsum dolor sit amet
       end
 
       expect { subject.parse_email(mail) }.to raise_error EmailParser::ParserError, "Balance not found. MailId: #{mail['Message-ID']}"
+    end
+
+    describe 'different currency' do
+      it 'should match different currency and extract and calculate actual amount' do
+        currency = fake_currency
+        amount = fake_amount
+
+        balance_currency = fake_currency
+        balance_amount = fake_amount
+        rate = (rand * 10 + 20).round(4)
+
+        mail = new_mail do
+          date DateTime.now
+          body %(
+#{amount}#{currency} Iнтернет-магазин LONDON 2*43 10:03 Бал. #{balance_amount}#{balance_currency} Курс #{rate} #{balance_currency}/#{currency}
+)
+        end
+        raw_transaction = subject.parse_email mail
+        expect(raw_transaction[:amount]).to eql((amount.to_f * rate).round(2))
+        expect(raw_transaction[:comment])
+          .to eql("Iнтернет-магазин LONDON. Actual amount #{amount}#{currency}. Курс #{rate} #{balance_currency}/#{currency}")
+      end
+
+      it 'should raise error if exchange rate not found' do
+        currency = fake_currency
+        amount = fake_amount
+
+        balance_currency = fake_currency
+        balance_amount = fake_amount
+
+        mail = new_mail do
+          body %(#{amount}#{currency} Iнтернет-магазин LONDON 2*43 10:03 Бал. #{balance_amount}#{balance_currency} Курс xxx Кред.лiм 1UAH)
+        end
+
+        expect { subject.parse_email(mail) }.to raise_error EmailParser::ParserError, "Exchange rate not found. MailId: #{mail['Message-ID']}"
+      end
     end
   end
 end
