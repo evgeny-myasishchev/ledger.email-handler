@@ -26,8 +26,9 @@ describe EmailParser::PBANUA2X do
       time = date.strftime('%H:%M')
       mail = new_mail do
         date date.iso8601
+        # There can be leading space
         body %(
-#{amount}#{currency} #{description} #{account} #{time} Бал. 1824.88#{currency} Бал. Бонус+ 135.40UAH
+ #{amount}#{currency} #{description} #{account} #{time} Бал. 1824.88#{currency} Бал. Бонус+ 135.40UAH
 Lorem ipsum dolor sit amet
 )
       end

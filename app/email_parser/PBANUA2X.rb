@@ -8,7 +8,7 @@ module EmailParser
 
       def parse_email(mail) # rubocop:disable Metrics/AbcSize
         body = extract_body mail
-        amount_match = parse_required(mail, body, AMOUNT_PATTERN, 'Leading amount not found')
+        amount_match = parse_required(mail, body.lstrip, AMOUNT_PATTERN, 'Leading amount not found')
         bank_account_match = parse_required(mail, amount_match.post_match, /\d\*\d{2}/, 'Account not found')
         time_match = parse_required(mail, bank_account_match.post_match, /^\s\d{2}:\d{2}/, 'Time not found')
         balance_match = parse_required(mail, time_match.post_match.lstrip, BALANCE_PATTERN, 'Balance not found')
