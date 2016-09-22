@@ -7,8 +7,12 @@ module EmailParser
   class BaseParser
     class << self
       protected def extract_body(mail)
-        return mail.parts[0].to_s if mail.multipart?
-        mail.body.to_s
+        if mail.multipart?
+          raise "Text part not found while parsing message: #{mail['Message-ID']}" unless mail.text_part
+          return mail.text_part.decoded
+        end
+
+        mail.decoded
       end
     end
   end
