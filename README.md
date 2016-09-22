@@ -81,3 +81,13 @@ You can schedule this command with cron to have this done on a schedule.
 ## Before push
 
 ```rubocop && rspec spec```
+
+## Integration Testing
+
+Mailtrap can be used as a mail provider. Use ```rake test:send-to-mailtrap[user,password,path]``` to send to mailtrap.
+
+Test if provider settings are valid:
+```rake test:pop3-fetch[user-email,BIC]```
+
+Invoke particular parser for given raw mail:
+```rake test:invoke-parser[BIC,message_path]```
