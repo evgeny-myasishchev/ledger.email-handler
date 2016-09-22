@@ -75,7 +75,7 @@ class EmailConfig
         settings = {}
       end
       settings[bic] = emails_provider_settings
-      config_file.write JSON.generate settings
+      config_file.write JSON.pretty_generate settings
     end
 
     # Returns emails provider settings for given ledger user_email (see format above)
