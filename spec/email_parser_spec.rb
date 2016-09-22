@@ -35,5 +35,24 @@ describe EmailParser do
       expect(transaction[:id]).to eql(expected_id)
       expect(transaction[:id].length).to be <= 50
     end
+
+    xit 'should decode eamil body' do
+    end
+
+    describe 'multipart' do
+      xit 'should return decoded text/plain part' do
+      end
+
+      xit 'should return first found decoded part if no text/plain found' do
+      end
+
+      describe 'multipart/mixed' do
+        xit 'should return decoded text/plain part' do
+        end
+
+        xit 'should return first found decoded part if no text/plain found' do
+        end
+      end
+    end
   end
 end
