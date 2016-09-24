@@ -8,6 +8,6 @@ class Bootstrap
   end
 
   def create_services
-    Services.new @app_root.join('.data')
+    Services.new @app_root.join(Settings.app.data)
   end
 end

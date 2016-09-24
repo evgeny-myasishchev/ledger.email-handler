@@ -1,5 +1,5 @@
 # The data should not be tracked
-.data
+.data*
 
 # Dev related stuff
 .rubocop_todo.yml

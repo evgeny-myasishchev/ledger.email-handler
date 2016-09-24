@@ -1,3 +1,5 @@
+app:
+    data: '.data'
 google:
     googleapis_host: https://www.googleapis.com
     client_id: <%= ENV['GOAUTH_CLIENT_ID'] %>

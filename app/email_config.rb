@@ -64,7 +64,7 @@ class EmailConfig
 
     def add_email_settings(user_email, bic, emails_provider_settings)
       Log.info "Adding email settings for user: #{user_email}, bic: #{bic}"
-      @config_dir.mkdir unless @config_dir.exist?
+      FileUtils.mkdir_p @config_dir unless @config_dir.exist?
       config_file = @config_dir.join(user_email)
       settings = nil
       if config_file.exist?
