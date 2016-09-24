@@ -4,7 +4,7 @@ module EmailParser
       INCOME_PATTERN = /^Поповнення$/
       BASE_AMOUNT_PATTERN = '(?<value>\\d+\.\\d{2})(?<currency>\\w{3})'.freeze
       AMOUNT_PATTERN = Regexp.compile("^#{BASE_AMOUNT_PATTERN}")
-      BALANCE_PATTERN = Regexp.compile("^Бал. #{BASE_AMOUNT_PATTERN}")
+      BALANCE_PATTERN = Regexp.compile("^Бал.\\s+#{BASE_AMOUNT_PATTERN}")
 
       def parse_email(mail) # rubocop:disable Metrics/AbcSize
         body = extract_body mail

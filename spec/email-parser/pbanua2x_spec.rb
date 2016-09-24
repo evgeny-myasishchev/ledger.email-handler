@@ -40,6 +40,17 @@ Lorem ipsum dolor sit amet
       expect(raw_transaction[:comment]).to eql description
     end
 
+    it 'should ignore line break after the balance' do
+      mail = new_mail do
+        body %(25326.92UAH Iнтернет-магазин WWW.ALIEXPRESS.COM 4*23 11:26 Бал.\n 25328.95UAH)
+      end
+      raw_transaction = subject.parse_email mail
+      expect(raw_transaction[:type_id]).to eql PendingTransaction::EXPENSE_TYPE_ID
+      expect(raw_transaction[:bank_account]).to eql '4*23'
+      expect(raw_transaction[:amount]).to eql '25326.92'
+      expect(raw_transaction[:comment]).to eql 'Iнтернет-магазин WWW.ALIEXPRESS.COM'
+    end
+
     it 'should match some comment patterns as income' do
       mail = new_mail do
         date DateTime.now
