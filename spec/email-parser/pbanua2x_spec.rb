@@ -40,6 +40,15 @@ Lorem ipsum dolor sit amet
       expect(raw_transaction[:comment]).to eql description
     end
 
+    it 'should handle time on a new line' do
+      mail = new_mail do
+        body %(25326.92UAH Iнтернет-магазин WWW.ALIEXPRESS.COM 4*23 \n11:26 Бал. 25328.95UAH)
+      end
+      raw_transaction = subject.parse_email mail
+      expect(raw_transaction[:date].hour).to eql 11
+      expect(raw_transaction[:date].minute).to eql 26
+    end
+
     it 'should ignore line break after the balance' do
       mail = new_mail do
         body %(25326.92UAH Iнтернет-магазин WWW.ALIEXPRESS.COM 4*23 11:26 Бал.\n 25328.95UAH)
