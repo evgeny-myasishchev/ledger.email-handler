@@ -47,11 +47,10 @@ describe PendingTransaction do
                              type_id: raw_t2[:type_id])
     end
 
-    it 'should raise error if mapping for bank account not found' do
+    it 'should set account_id to nil if no account mapping configured' do
       raw_tran = build_raw_transaction
-      expect do
-        described_class.build(accounts_mapping_cfg.get_mappings(user_email), raw_tran)
-      end.to raise_error "Can not build pending transaction id='#{raw_tran[:id]}'. Mapping for bank account '#{raw_tran[:bank_account]}' not found."
+      t1 = described_class.build(accounts_mapping_cfg.get_mappings(user_email), raw_tran)
+      expect(t1.data[:account_id]).to be_nil
     end
   end
 

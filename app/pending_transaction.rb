@@ -1,4 +1,6 @@
 class PendingTransaction
+  Log = Logger.get(self)
+
   INCOME_TYPE_ID = 1
   EXPENSE_TYPE_ID = 2
 
@@ -30,10 +32,8 @@ class PendingTransaction
 
   def self.build(accounts_mapping_cfg, raw_transaction)
     bank_account = raw_transaction[:bank_account]
-    unless accounts_mapping_cfg.key?(bank_account)
-      raise "Can not build pending transaction id='#{raw_transaction[:id]}'. Mapping for bank account '#{bank_account}' not found."
-    end
     ledger_account_id = accounts_mapping_cfg[bank_account]
+    Log.info "Mapping not found. Bank account: #{bank_account}" unless ledger_account_id
     new(id: raw_transaction[:id],
         amount: raw_transaction[:amount],
         date: raw_transaction[:date],
