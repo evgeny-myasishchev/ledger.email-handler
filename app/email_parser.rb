@@ -1,5 +1,6 @@
 require 'digest'
 require 'base64'
+require 'nokogiri'
 
 module EmailParser
   class ParserError < StandardError; end
@@ -8,8 +9,9 @@ module EmailParser
     class << self
       protected def extract_body(mail)
         if mail.multipart?
-          raise "Text part not found while parsing message: #{mail['Message-ID']}" unless mail.text_part
-          return mail.text_part.decoded
+          return mail.text_part.decoded if mail.text_part
+          return Nokogiri::HTML(mail.html_part.decoded).text if mail.html_part
+          raise "Text or html part not found while parsing message: #{mail['Message-ID']}"
         end
 
         mail.decoded

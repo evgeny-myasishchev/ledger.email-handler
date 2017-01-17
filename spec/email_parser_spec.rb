@@ -69,16 +69,6 @@ describe EmailParser do
           expect(mail.content_type).to start_with('multipart/alternative')
           expect(subject.extract_body(mail)).to eql(mail_body)
         end
-
-        it 'should raise error if no text part found' do
-          mail = Mail.new content_type: 'multipart/alternative', message_id: fake_string('msg-id') do
-            html_part do
-              body 'hello'
-            end
-          end
-          expect(mail.content_type).to start_with('multipart/alternative')
-          expect { subject.extract_body(mail) }.to raise_error "Text part not found while parsing message: #{mail['Message-ID']}"
-        end
       end
 
       describe 'multipart/mixed' do
@@ -94,14 +84,28 @@ describe EmailParser do
           expect(subject.extract_body(mail)).to eql(mail_body)
         end
 
+        it 'should return converted to plain text text/html part if no text part' do
+          str1 = fake_string('str1')
+          str2 = fake_string('str2')
+          html_body = "<h1>#{str1}</h1><br><div>#{str2}</div>"
+          html_body_base64 = Base64.encode64 html_body
+
+          mail = Mail.new
+          mail.html_part = Mail::Part.new body: html_body_base64 do
+            content_transfer_encoding 'base64'
+          end
+          expect(mail.content_type).to start_with('multipart/mixed')
+          expect(subject.extract_body(mail)).to eql("#{str1}#{str2}")
+        end
+
         it 'should raise error if no text part found' do
           mail = Mail.new message_id: fake_string('msg-id') do
             part content_type: 'multipart/alternative' do |p|
-              p.part content_type: 'text/html', body: '<h1>Should not get it</h1>'
+              p.part content_type: 'text/other', body: '<h1>Should not get it</h1>'
             end
           end
           expect(mail.content_type).to start_with('multipart/mixed')
-          expect { subject.extract_body(mail) }.to raise_error "Text part not found while parsing message: #{mail['Message-ID']}"
+          expect { subject.extract_body(mail) }.to raise_error "Text or html part not found while parsing message: #{mail['Message-ID']}"
         end
       end
     end

@@ -8,6 +8,7 @@ gem 'mail'
 gem 'jwt'
 gem 'config'
 gem 'logging'
+gem 'nokogiri'
 
 group :development, :test do
   gem 'rubocop', require: false
