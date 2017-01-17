@@ -4,6 +4,9 @@ require 'app/email_parser/AGRIUAUK'
 
 describe EmailParser::AGRIUAUK do
   subject { described_class }
+
+  let(:current_year) { DateTime.now.year }
+
   describe 'parse_email' do
     it 'should parse expense email' do
       mail = Mail.new do
@@ -18,7 +21,7 @@ Mesto:PortoR221(Porto_R22)
       end
       raw_transaction = subject.parse_email mail
       expect(raw_transaction[:type_id]).to eql PendingTransaction::EXPENSE_TYPE_ID
-      expect(raw_transaction[:date]).to eql DateTime.iso8601('2016-06-20T09:45')
+      expect(raw_transaction[:date]).to eql DateTime.iso8601("#{current_year}-06-20T09:45")
       expect(raw_transaction[:bank_account]).to eql '4164'
       expect(raw_transaction[:amount]).to eql '338'
       expect(raw_transaction[:comment]).to eql 'PortoR221(Porto_R22)'
@@ -57,7 +60,7 @@ Mesto:PortoR221(Porto_R22)
 )
       raw_transaction = subject.parse_email mail
       expect(raw_transaction[:type_id]).to eql PendingTransaction::EXPENSE_TYPE_ID
-      expect(raw_transaction[:date]).to eql DateTime.iso8601('2016-06-20T09:45')
+      expect(raw_transaction[:date]).to eql DateTime.iso8601("#{current_year}-06-20T09:45")
       expect(raw_transaction[:bank_account]).to eql '4164'
       expect(raw_transaction[:amount]).to eql '338'
       expect(raw_transaction[:comment]).to eql 'PortoR221(Porto_R22)'
