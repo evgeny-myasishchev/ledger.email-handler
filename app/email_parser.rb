@@ -14,6 +14,10 @@ module EmailParser
           raise "Text or html part not found while parsing message: #{mail['Message-ID']}"
         end
 
+        if mail.content_type && mail.content_type.start_with?('text/html')
+          return Nokogiri::HTML(mail.decoded).text
+        end
+
         mail.decoded
       end
     end

@@ -57,6 +57,21 @@ describe EmailParser do
         expect(subject.extract_body(mail)).to eql(mail_body)
       end
 
+      describe 'text/html' do
+        it 'should handle html only emails' do
+          str1 = fake_string('str1')
+          str2 = fake_string('str2')
+          html_body = "<h1>#{str1}</h1><br><div>#{str2}</div>"
+
+          mail = Mail.new do
+            body html_body
+            content_type 'text/html; charset=UTF-8'
+          end
+          expect(mail.content_type).to start_with('text/html')
+          expect(subject.extract_body(mail)).to eql("#{str1}#{str2}")
+        end
+      end
+
       describe 'multipart/alternative' do
         it 'should return decoded text/plain part' do
           mail = Mail.new
