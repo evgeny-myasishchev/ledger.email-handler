@@ -14,3 +14,7 @@ log:
         enabled: true
         level: :debug
         path: log/service.log
+    syslog:
+        name: email-handler
+        ident: service.plain.development.ledger.email-handler
+        enabled: false

@@ -11,13 +11,13 @@ class Logger
       appenders = []
       append_stdout_appender appenders
       append_file_appender appenders
+      append_syslog_appender appenders
       Logging.logger.root.appenders = appenders
       Logging.logger.root.level = :debug
     end
 
     private def append_stdout_appender(appenders)
       settings = Settings.log
-      appenders = []
       if settings.stdout.enabled
         stdout = Logging.appenders.stdout(
           layout: Logging::Layouts::Pattern.new,
@@ -34,6 +34,15 @@ class Logger
                                         layout: Logging::Layouts::Pattern.new,
                                         level: settings.file.level)
         appenders << stdout
+      end
+    end
+
+    private def append_syslog_appender(appenders)
+      settings = Settings.log
+      if settings.syslog.enabled
+        syslog = Logging.appenders.syslog(settings.syslog.name,
+                                          ident: settings.syslog.ident)
+        appenders << syslog
       end
     end
   end

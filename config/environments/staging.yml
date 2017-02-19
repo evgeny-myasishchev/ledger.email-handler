@@ -1,2 +1,7 @@
 ledger:
     api_host: https://staging.my-ledger.com
+
+log:
+    syslog:
+        ident: service.plain.staging.ledger.email-handler
+        enabled: true

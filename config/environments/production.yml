@@ -1,2 +1,6 @@
 ledger:
     api_host: https://my-ledger.com
+log:
+    syslog:
+        ident: service.plain.production.ledger.email-handler
+        enabled: true

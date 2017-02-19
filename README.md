@@ -2,6 +2,22 @@
 
 Service that parses bank emails with transactions and submits pending transactions to ledger
 
+# Development
+
+Building dev docker image:
+
+```docker build -f dev/Dockerfile . -t ledger.email-handler```
+
+Running misc commands:
+
+```docker run -v `pwd`:/project --rm -it ledger.email-handler rspec spec```
+
+```docker run -v `pwd`:/project --rm -it ledger.email-handler guard```
+
+Or just generic bash:
+
+```docker run -v `pwd`:/project --rm -it ledger.email-handler bash```
+
 # Deployment Dependencies
 
 ## Environment Variables
