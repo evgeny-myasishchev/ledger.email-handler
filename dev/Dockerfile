@@ -11,11 +11,10 @@ RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
 ENV LC_ALL=en_US.UTF-8
 
 
-COPY Gemfile Gemfile.lock ./
+COPY Gemfile Gemfile.lock dev/docker-entrypoint.sh ./
 RUN gem install bundler && bundle install --jobs 20 --retry 5
 
 VOLUME /project
 WORKDIR /project
-
-ENTRYPOINT ["dev/docker-entrypoint.sh"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["bash"]
