@@ -10,15 +10,21 @@ module EmailParser
       protected def extract_body(mail)
         if mail.multipart?
           return mail.text_part.decoded if mail.text_part
-          return Nokogiri::HTML(mail.html_part.decoded).text if mail.html_part
+          return extract_text(mail.html_part.decoded) if mail.html_part
           raise "Text or html part not found while parsing message: #{mail['Message-ID']}"
         end
 
         if mail.content_type && mail.content_type.start_with?('text/html')
-          return Nokogiri::HTML(mail.decoded).text
+          return extract_text(mail.decoded)
         end
 
         mail.decoded
+      end
+
+      private def extract_text(html)
+        doc = Nokogiri::HTML(html)
+        doc.xpath('//style').remove
+        doc.text
       end
     end
   end

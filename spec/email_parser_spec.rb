@@ -70,6 +70,20 @@ describe EmailParser do
           expect(mail.content_type).to start_with('text/html')
           expect(subject.extract_body(mail)).to eql("#{str1}#{str2}")
         end
+
+        it 'should should ignore style blocks' do
+          str1 = fake_string('str1')
+          html_body = <<-eos
+<style type="text/css">div { color: red; }</style>
+<div>#{str1}</div>
+eos
+          mail = Mail.new do
+            body html_body
+            content_type 'text/html; charset=UTF-8'
+          end
+          expect(mail.content_type).to start_with('text/html')
+          expect(subject.extract_body(mail).strip).to eql(str1)
+        end
       end
 
       describe 'multipart/alternative' do
